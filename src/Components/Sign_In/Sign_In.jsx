@@ -1,0 +1,96 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+
+export default function Sign_In() {
+  const [email, setEmail] = useState("");
+  const [passWord, setPassWord] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (
+      storedUser &&
+      storedUser.email === email &&
+      storedUser.passWord === passWord
+    ) {
+      localStorage.setItem("currentUser", JSON.stringify(storedUser));
+      navigate("/");
+    } else {
+      setError("Incorrect email or password.");
+    }
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>FitGuide - Sign In</title>
+      </Helmet>
+      <div className="signIn">
+        <div className="container-fluid">
+          <div className="signInInner">
+            <button className="backHome">
+              <a href="/">back to home</a>
+            </button>
+
+            <form className="signInForm row" onSubmit={handleLogin}>
+              <div className="formHeader col-12">
+                <h3>sign in</h3>
+                <p>Track your progress and achieve your fitness goals</p>
+              </div>
+
+              {error && (
+                <div className="alert alert-danger col-12" role="alert">
+                  {error}
+                </div>
+              )}
+
+              <div className="input-group">
+                <span className="input-group-text">
+                  <img src="imgs/icons8-email-48.png" alt="email icon" />
+                </span>
+                <input
+                  required
+                  type="email"
+                  className="form-control"
+                  placeholder="email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="input-group">
+                <span className="input-group-text">
+                  <img src="imgs/icons8-lock-48.png" alt="lock icon" />
+                </span>
+                <input
+                  required
+                  className="form-control"
+                  type="password"
+                  placeholder="password"
+                  value={passWord}
+                  onChange={(e) => setPassWord(e.target.value)}
+                />
+              </div>
+
+              <label className="col-5">
+                <input type="checkbox" /> Remember Me
+              </label>
+
+              <button className="passwordReset col-6" type="button">
+                <a href="#">forgot password ?</a>
+              </button>
+
+              <button className="sigInBtn col-12" type="submit">
+                sign in
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
