@@ -83,6 +83,110 @@ body {
   }
 }
 
+/* offCanvas */
+.offCanvTriger {
+  border: none;
+  background-color: #3cb371;
+  color: #fff;
+  position: fixed;
+  top: 2%;
+  left: 2%;
+  z-index: 111;
+}
+
+.offcanvas {
+  background-color: #d9d9d9d3;
+  backdrop-filter: blur(10px);
+  width: 25dvw !important;
+
+  .offcanvas-header {
+    .logo {
+      a {
+        text-decoration: none;
+        font-weight: bold;
+        background-image: linear-gradient(to left, #008b8b, #3cb371);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+
+        img {
+          width: 30%;
+        }
+      }
+
+      h6 {
+        font-weight: bold;
+        background-image: linear-gradient(to left, #008b8b, #3cb371);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+      }
+    }
+  }
+
+  .offcanvas-body {
+    .offCanList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .offcanvItem {
+        margin: 20px 0px;
+
+        a {
+          text-decoration: none;
+          color: #000;
+          transition: all 0.3s ease-in-out;
+        }
+
+        img {
+          width: 7%;
+          margin-inline-end: 5px;
+        }
+
+        &:hover {
+          a {
+            color: #3cb371;
+          }
+        }
+      }
+    }
+
+    .logBtns {
+      padding: 50px 0px;
+
+      .logBtn {
+        display: block;
+        margin: 10px 0px;
+        border: none;
+        padding: 5px 10px;
+        background-color: transparent;
+      }
+
+      .logIn {
+        a {
+          font-family: inter-bold !important;
+          text-decoration: none;
+          color: #1e293b;
+        }
+      }
+
+      .signUp {
+        background-image: linear-gradient(to left, #008b8b, #3cb371);
+        border-radius: 8px;
+
+        a {
+          font-family: inter-bold !important;
+          text-decoration: none;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
 /* navbar */
 .navBar {
   position: sticky;
@@ -1439,9 +1543,32 @@ body {
 }
 
 /* responsive */
+@media screen and (min-width: 1200px) {
+  .GnavBar {
+    display: block;
+  }
+  .navBar {
+    display: block;
+  }
+
+  .offCanvTriger {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   :root {
     font-size: 14px;
+  }
+  .GnavBar {
+    display: none;
+  }
+  .navBar {
+    display: none;
+  }
+
+  .offCanvTriger {
+    display: block;
   }
   .signIn {
     .signInInner {
@@ -1474,6 +1601,11 @@ body {
         margin: auto;
       }
     }
+  }
+  .offcanvas {
+    background-color: #d9d9d9d3;
+    backdrop-filter: blur(10px);
+    width: 40dvw !important;
   }
 }
 
