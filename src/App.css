@@ -986,6 +986,7 @@ body {
     .profileEdit {
       justify-content: start;
       align-items: center;
+
       .img {
         span {
           padding: 30px;
@@ -995,12 +996,23 @@ body {
           color: #fff;
         }
       }
+
       .editBtn {
         text-align: end;
+
         .editPBtn {
           border: none;
           border-radius: 5px;
           background-image: linear-gradient(to left, #008b8b, #3cb371);
+          color: #fff;
+          padding: 10px 20px;
+          margin-inline-end: 5px;
+        }
+
+        .logOut {
+          border: none;
+          border-radius: 5px;
+          background-color: #fd0000;
           color: #fff;
           padding: 10px 20px;
         }

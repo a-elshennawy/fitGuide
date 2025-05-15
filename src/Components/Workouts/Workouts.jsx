@@ -1,8 +1,12 @@
 import UpBtn from "../UpBtn";
+import { Helmet } from "react-helmet";
 
 export default function Workouts() {
   return (
     <>
+      <Helmet>
+        <title>FitGuide - Workouts</title>
+      </Helmet>
       <div className="workouts">
         <div className="container-fluid">
           <div className="workoutsInner row">

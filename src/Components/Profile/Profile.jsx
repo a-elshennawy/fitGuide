@@ -1,7 +1,15 @@
 import UpBtn from "../UpBtn";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    navigate("/");
+  };
 
   const getInitials = (name) => {
     const parts = name?.trim().split(" ") || [];
@@ -11,6 +19,9 @@ export default function Profile() {
 
   return (
     <>
+      <Helmet>
+        <title>FitGuide - Profile</title>
+      </Helmet>
       <div className="profile">
         <div className="container-fluid">
           <div className="profileInner row">
@@ -22,12 +33,15 @@ export default function Profile() {
                 <h3>{currentUser?.name}</h3>
                 <p>{currentUser?.bodyMetrics.goal || "No goal set"}</p>
               </div>
-              <div className="editBtn col-2">
+              <div className="editBtn col-3">
                 <button className="editPBtn">edit profile</button>
+                <button className="logOut" onClick={handleLogout}>
+                  log out
+                </button>
               </div>
             </div>
 
-            <div className="PSec personalInfo fromRight col-5 row">
+            <div className="PSec personalInfo fromLeft col-5 row">
               <h3 className="col-12">personal information</h3>
 
               <div className="innerSec col-12">
@@ -63,7 +77,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec BMetrics fromLeft col-5 row">
+            <div className="PSec BMetrics fromRight col-5 row">
               <h3 className="col-12">body metrics</h3>
 
               <div className="innerSec col-5">
@@ -107,7 +121,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec goals fromRight col-5 row">
+            <div className="PSec goals fromLeft col-5 row">
               <h3 className="col-12">goals & workout plan</h3>
 
               <div className="innerSec col-5">
@@ -127,7 +141,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec metricH fromLeft  col-5 row">
+            <div className="PSec metricH fromRight  col-5 row">
               <h3 className="col-12">metric history</h3>
             </div>
           </div>
