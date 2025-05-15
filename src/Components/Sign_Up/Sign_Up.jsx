@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 export default function Sign_Up() {
   const navigate = useNavigate();
-
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,6 +39,18 @@ export default function Sign_Up() {
 
     navigate("/bodymetrics");
   };
+
+  useEffect(() => {
+    fetch("https://restcountries.com/v3.1/all")
+      .then((res) => res.json())
+      .then((data) => {
+        const countryNames = data
+          .map((country) => country.name.common)
+          .sort((a, b) => a.localeCompare(b));
+        setCountries(countryNames);
+      })
+      .catch((err) => console.error("Error fetching countries:", err));
+  }, []);
 
   return (
     <>
@@ -151,7 +164,11 @@ export default function Sign_Up() {
                   <option value="" disabled>
                     Country
                   </option>
-                  <option value="eg">Egypt</option>
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
                 </select>
               </div>
 

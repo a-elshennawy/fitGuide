@@ -1,20 +1,22 @@
 import UpBtn from "../UpBtn";
-import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 export default function Profile() {
-  const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
-    navigate("/");
+    window.location.href = "/";
   };
 
   const getInitials = (name) => {
-    const parts = name?.trim().split(" ") || [];
-    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "U";
-    return (parts[0][0] + parts[1][0]).toUpperCase();
+    if (typeof name !== "string" || !name.trim()) return "U";
+
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.[0] || "";
+    const second = parts[1]?.[0] || "";
+
+    return (first + second).toUpperCase() || "U";
   };
 
   return (
@@ -31,7 +33,7 @@ export default function Profile() {
               </div>
               <div className="details col-lg-7 col-5">
                 <h3>{currentUser?.name}</h3>
-                <p>{currentUser?.bodyMetrics.goal || "No goal set"}</p>
+                <p>{currentUser?.bodyMetrics?.goal || "No goal set"}</p>
               </div>
               <div className="editBtn col-lg-3 col-12">
                 <button className="editPBtn">edit profile</button>
@@ -129,7 +131,7 @@ export default function Profile() {
                   <img src="imgs/icons8-target-48.png" alt="" />
                   current goal
                 </h5>
-                <h4>{currentUser?.bodyMetrics.goal || "N/A"}</h4>
+                <h4>{currentUser?.bodyMetrics?.goal || "N/A"}</h4>
               </div>
 
               <div className="innerSec col-5">

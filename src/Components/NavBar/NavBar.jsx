@@ -2,14 +2,17 @@ import { NavLink, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-export default function NavBar() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+export default function NavBar({ currentUser }) {
   const location = useLocation();
 
   const getInitials = (name) => {
-    const parts = name?.trim().split(" ") || [];
-    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "U";
-    return (parts[0][0] + parts[1][0]).toUpperCase();
+    if (typeof name !== "string" || !name.trim()) return "U";
+
+    const parts = name.trim().split(/\s+/);
+    const first = parts[0]?.[0] || "";
+    const second = parts[1]?.[0] || "";
+
+    return (first + second).toUpperCase() || "U";
   };
 
   const isActive = (path) =>
