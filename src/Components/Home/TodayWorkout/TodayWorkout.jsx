@@ -4,15 +4,15 @@ export default function TodayWorkout() {
       <div className="TodayWorkout">
         <div className="container">
           <div className="todayInner row">
-            <div className="innerPart row col-8">
+            <div className="innerPart row col-lg-8 col-12">
               <div className="header row col-12">
                 <img
                   className="col-2"
                   src="imgs/icons8-deadlift-50.png"
                   alt=""
                 />
-                <h4 className="col-8">Today's Workout Plan</h4>
-                <h6 className="col-3">Beginner Strength Plan</h6>
+                <h4 className="col-5">Today's Workout Plan</h4>
+                <h6 className="col-6">Beginner Strength Plan</h6>
               </div>
               <div className="workout fromBottom row col-12">
                 <img

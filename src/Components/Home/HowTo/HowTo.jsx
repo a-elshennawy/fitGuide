@@ -8,7 +8,7 @@ export default function HowTo() {
               <h3>how FitGuide works</h3>
             </div>
             <div className="itemsPart row col-11">
-              <div className="item fromLeft col-3">
+              <div className="item fromLeft col-10 col-lg-3">
                 <div className="icon">
                   <img src="imgs/icons8-plan-80.png" alt="" />
                 </div>
@@ -19,7 +19,7 @@ export default function HowTo() {
                   </p>
                 </div>
               </div>
-              <div className="item fromLeft col-3">
+              <div className="item fromLeft col-10 col-lg-3">
                 <div className="icon">
                   <img src="imgs/icons8-arm-50.png" alt="" />
                 </div>
@@ -28,7 +28,7 @@ export default function HowTo() {
                   <p>Receive your personalized workout and nutrition plan</p>
                 </div>
               </div>
-              <div className="item fromRight col-3">
+              <div className="item fromRight col-10 col-lg-3">
                 <div className="icon">
                   <img src="imgs/icons8-phone-48.png" alt="" />
                 </div>
@@ -37,7 +37,7 @@ export default function HowTo() {
                   <p>Get real-time feedback during workouts</p>
                 </div>
               </div>
-              <div className="item fromRight col-3">
+              <div className="item fromRight col-10 col-lg-3">
                 <div className="icon">
                   <img src="imgs/icons8-progress-32.png" alt="" />
                 </div>

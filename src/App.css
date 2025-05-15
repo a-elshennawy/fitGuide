@@ -1,6 +1,10 @@
 @import url("./Animations.css");
 @import url("./fonts.css");
 
+:root {
+  font-size: 16px;
+}
+
 * {
   box-sizing: border-box;
   text-transform: capitalize !important;
@@ -268,6 +272,8 @@ body {
 
     .itemsPart {
       padding: 20px 0px;
+      justify-content: center;
+      align-items: center;
       .item {
         text-align: center;
         .icon {
@@ -397,14 +403,13 @@ body {
 
 /* sign in */
 .signIn {
+  position: relative;
   padding: 40px 0px;
   text-align: center;
 
   .signInInner {
-    position: relative;
-
     .backHome {
-      position: fixed;
+      position: absolute;
       top: 5%;
       right: 5%;
       background-color: transparent;
@@ -417,7 +422,7 @@ body {
     }
 
     .signInForm {
-      width: 30%;
+      width: 30dvw;
       margin: auto;
       justify-content: space-between;
       align-items: center;
@@ -496,14 +501,15 @@ body {
 /* sign up */
 .signUp {
   text-align: center;
+  position: relative;
 
   .signUpInner {
-    position: relative;
+    padding: 40px 0px;
 
     .backHome {
-      position: fixed;
+      position: absolute;
       top: 5%;
-      right: 5%;
+      right: 5% !important;
       background-color: transparent;
       border: none;
 
@@ -514,7 +520,7 @@ body {
     }
 
     .signUpForm {
-      width: 30%;
+      width: 30dvw;
       margin: auto;
       justify-content: space-between;
       align-items: center;
@@ -630,7 +636,7 @@ body {
     }
 
     .bodyFrom {
-      width: 30%;
+      width: 30dvw;
       margin: auto;
       justify-content: space-between;
       align-items: center;
@@ -751,7 +757,7 @@ body {
     }
 
     .innerPart {
-      width: 30%;
+      width: 30dvw;
       margin: auto;
       justify-content: center;
       align-items: center;
@@ -797,6 +803,7 @@ body {
         .addBtn {
           border: none;
           padding: 10px;
+          margin: 10px 0px;
           background-color: #3cb371;
           color: #fff;
           border-radius: 5px;
@@ -1092,6 +1099,7 @@ body {
       }
 
       .btns {
+        text-align: center;
         .switch {
           border: none;
           background-color: #3cb371;
@@ -1243,7 +1251,7 @@ body {
     }
 
     .weightTrack {
-      width: fit-content;
+      text-align: center;
       background-color: #fff;
       align-content: center;
       padding: 50px 10px;
@@ -1253,7 +1261,7 @@ body {
         padding: 10px 0px;
 
         img {
-          width: 15%;
+          width: 10%;
         }
       }
       h2 {
@@ -1428,4 +1436,119 @@ body {
   animation: fromBottom linear forwards;
   animation-timeline: view();
   animation-range: entry 0%;
+}
+
+/* responsive */
+@media screen and (max-width: 1200px) {
+  :root {
+    font-size: 14px;
+  }
+  .signIn {
+    .signInInner {
+      .signInForm {
+        width: 40dvw;
+        margin: auto;
+      }
+    }
+  }
+  .signUp {
+    .signUpInner {
+      .signUpForm {
+        width: 40dvw;
+        margin: auto;
+      }
+    }
+  }
+  .bodyMetrics {
+    .BMetricsInner {
+      .bodyFrom {
+        width: 40dvw;
+        margin: auto;
+      }
+    }
+  }
+  .healthCs {
+    .healthInner {
+      .innerPart {
+        width: 40dvw;
+        margin: auto;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    font-size: 12px;
+  }
+  .signIn {
+    .signInInner {
+      .signInForm {
+        width: 60dvw;
+        margin: auto;
+      }
+    }
+  }
+  .signUp {
+    .signUpInner {
+      .signUpForm {
+        width: 60dvw;
+        margin: auto;
+      }
+    }
+  }
+  .bodyMetrics {
+    .BMetricsInner {
+      .bodyFrom {
+        width: 60dvw;
+        margin: auto;
+      }
+    }
+  }
+  .healthCs {
+    .healthInner {
+      .innerPart {
+        width: 60dvw;
+        margin: auto;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  :root {
+    font-size: 10px;
+  }
+  .signIn {
+    .signInInner {
+      .signInForm {
+        width: 80dvw;
+        margin: auto;
+      }
+    }
+  }
+  .signUp {
+    .signUpInner {
+      .signUpForm {
+        width: 80dvw;
+        margin: auto;
+      }
+    }
+  }
+  .bodyMetrics {
+    .BMetricsInner {
+      .bodyFrom {
+        width: 80dvw;
+        margin: auto;
+      }
+    }
+  }
+  .healthCs {
+    .healthInner {
+      .innerPart {
+        width: 80dvw;
+        margin: auto;
+      }
+    }
+  }
 }

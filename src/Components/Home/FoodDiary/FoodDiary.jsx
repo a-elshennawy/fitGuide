@@ -4,18 +4,18 @@ export default function FoodDiary() {
       <div className="food">
         <div className="container">
           <div className="foodInner row">
-            <div className="innerPart row col-8">
+            <div className="innerPart row col-lg-8 col-12">
               <div className="header row col-12">
                 <img className="col-1" src="imgs/icons8-edit-64.png" alt="" />
                 <h4 className="col-8">food diary</h4>
               </div>
               <div className="secPrt fromBottom col-12">
                 <div className="head row">
-                  <div className="text col-4">
+                  <div className="text col-lg-4 col-3">
                     <h4>breakfast</h4>
                     <p>496 kcal</p>
                   </div>
-                  <button className="addFood col-2">+ add food</button>
+                  <button className="addFood col-lg-2 col-3">+ add food</button>
                 </div>
                 <ul>
                   <li>
@@ -32,11 +32,11 @@ export default function FoodDiary() {
               </div>
               <div className="secPrt fromBottom col-12">
                 <div className="head row">
-                  <div className="text col-4">
+                  <div className="text col-lg-4 col-3">
                     <h4>lunch</h4>
                     <p>500 kcal</p>
                   </div>
-                  <button className="addFood col-2">+ add food</button>
+                  <button className="addFood col-lg-2 col-3">+ add food</button>
                 </div>
                 <ul>
                   <li>
@@ -50,11 +50,11 @@ export default function FoodDiary() {
               </div>
               <div className="secPrt fromBottom col-12">
                 <div className="head row">
-                  <div className="text col-4">
+                  <div className="text col-lg-4 col-3">
                     <h4>Dinner</h4>
                     <p>421 kcal</p>
                   </div>
-                  <button className="addFood col-2">+ add food</button>
+                  <button className="addFood col-lg-2 col-3">+ add food</button>
                 </div>
                 <ul>
                   <li>

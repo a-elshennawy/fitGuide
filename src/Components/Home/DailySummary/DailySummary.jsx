@@ -4,10 +4,10 @@ export default function DailySummary() {
       <div className="daily">
         <div className="container-fluid">
           <div className="innerPart row">
-            <div className="dailySummary fromLeft col-5 row">
+            <div className="dailySummary fromLeft col-12 col-lg-5 row">
               <h3 className="col-10">daily summary</h3>
 
-              <div className="targs row col-10">
+              <div className="targs row col-lg-10 col-12">
                 <div className="goal col-4">
                   <img src="imgs/icons8-target-48.png" alt="" />
                   <p>goal</p>
@@ -28,7 +28,7 @@ export default function DailySummary() {
                 </div>
               </div>
 
-              <div className="tracs row col-10">
+              <div className="tracs row col-lg-10 col-12">
                 <div className="protein col-4">
                   <p>protein</p>
                   <h4>
@@ -52,7 +52,7 @@ export default function DailySummary() {
                 </div>
               </div>
             </div>
-            <div className="weightTrack fromRight col-5">
+            <div className="weightTrack fromRight col-lg-5 col-12">
               <h3>
                 <img src="imgs/icons8-balance-48.png" alt="" /> weight tracker
               </h3>

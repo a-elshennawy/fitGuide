@@ -25,15 +25,15 @@ export default function Profile() {
       <div className="profile">
         <div className="container-fluid">
           <div className="profileInner row">
-            <div className="PSec profileEdit fromBottom row col-10">
-              <div className="img col-1">
+            <div className="PSec profileEdit fromBottom row col-lg-10 col-12">
+              <div className="img col-lg-1 col-5">
                 <span>{getInitials(currentUser?.name)}</span>
               </div>
-              <div className="details col-7">
+              <div className="details col-lg-7 col-5">
                 <h3>{currentUser?.name}</h3>
                 <p>{currentUser?.bodyMetrics.goal || "No goal set"}</p>
               </div>
-              <div className="editBtn col-3">
+              <div className="editBtn col-lg-3 col-12">
                 <button className="editPBtn">edit profile</button>
                 <button className="logOut" onClick={handleLogout}>
                   log out
@@ -41,7 +41,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec personalInfo fromLeft col-5 row">
+            <div className="PSec personalInfo fromLeft col-lg-5 col-10 row">
               <h3 className="col-12">personal information</h3>
 
               <div className="innerSec col-12">
@@ -77,7 +77,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec BMetrics fromRight col-5 row">
+            <div className="PSec BMetrics fromRight col-lg-5 col-10 row">
               <h3 className="col-12">body metrics</h3>
 
               <div className="innerSec col-5">
@@ -121,7 +121,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec goals fromLeft col-5 row">
+            <div className="PSec goals fromLeft col-lg-5 col-10 row">
               <h3 className="col-12">goals & workout plan</h3>
 
               <div className="innerSec col-5">
@@ -141,7 +141,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec metricH fromRight  col-5 row">
+            <div className="PSec metricH fromRight  col-lg-5 col-10 row">
               <h3 className="col-12">metric history</h3>
             </div>
           </div>

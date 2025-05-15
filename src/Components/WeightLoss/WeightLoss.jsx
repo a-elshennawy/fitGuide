@@ -14,8 +14,8 @@ export default function WeightLoss() {
               <div className="bar col-1"></div>
             </div>
 
-            <div className="innerPart col-6 row">
-              <div className="section topSec col-8">
+            <div className="innerPart col-lg-6 col-12 row">
+              <div className="section topSec col-lg-8 col-10">
                 <h4>
                   <img src="imgs/icons8-check-50.png" alt="" />
                   weight loss
@@ -26,7 +26,7 @@ export default function WeightLoss() {
                 </p>
               </div>
 
-              <div className="section col-8">
+              <div className="section col-lg-8 col-10">
                 <div className="header">
                   <h4>Weight Goal</h4>
                 </div>
@@ -47,7 +47,7 @@ export default function WeightLoss() {
                 </div>
               </div>
 
-              <div className="section col-8">
+              <div className="section col-lg-8 col-10">
                 <div className="header">
                   <h4>BMI Target</h4>
                 </div>
@@ -67,7 +67,7 @@ export default function WeightLoss() {
                 </div>
               </div>
 
-              <div className="section col-8">
+              <div className="section col-lg-8 col-10">
                 <div className="header">
                   <h4>Muscle Mass Target</h4>
                 </div>
@@ -87,7 +87,7 @@ export default function WeightLoss() {
                 </div>
               </div>
 
-              <div className="btnsSec row col-8">
+              <div className="btnsSec row col-lg-8 col-10">
                 <button className="backBtn col-3">
                   <Link to={"/healthconditions"}>back</Link>
                 </button>
@@ -97,7 +97,7 @@ export default function WeightLoss() {
                 </button>
               </div>
 
-              <p className="col-8 m-2">
+              <p className="col-lg-8 col-10 m-2">
                 You can always adjust these goals from your profile settings
               </p>
             </div>

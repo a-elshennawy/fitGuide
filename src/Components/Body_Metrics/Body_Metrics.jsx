@@ -75,7 +75,7 @@ export default function Body_Metrics() {
                 <p>This helps us create your personalized fitness plan</p>
               </div>
 
-              <div className="inputContainer col-5">
+              <div className="inputContainer col-lg-5 col-10">
                 <label htmlFor="weight">weight</label>
                 <input
                   required
@@ -88,7 +88,7 @@ export default function Body_Metrics() {
                 />
               </div>
 
-              <div className="inputContainer col-5">
+              <div className="inputContainer col-lg-5 col-10">
                 <label htmlFor="height">height</label>
                 <input
                   required
@@ -101,7 +101,7 @@ export default function Body_Metrics() {
                 />
               </div>
 
-              <div className="inputContainer col-5">
+              <div className="inputContainer col-lg-5 col-10">
                 <label htmlFor="fats">body fat %</label>
                 <input
                   required
@@ -114,7 +114,7 @@ export default function Body_Metrics() {
                 />
               </div>
 
-              <div className="inputContainer col-5">
+              <div className="inputContainer col-lg-5 col-10">
                 <label htmlFor="waterMass">water mass</label>
                 <input
                   required
@@ -169,7 +169,7 @@ export default function Body_Metrics() {
                 </p>
               )}
 
-              <div className="disclaimer row col-11">
+              <div className="disclaimer row col-12">
                 <img className="col-2" src="imgs/icons8-arm-50.png" alt="" />
                 <p className="col-10">
                   Your metrics help us create the perfect workout and nutrition

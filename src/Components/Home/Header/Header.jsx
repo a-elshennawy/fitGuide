@@ -18,7 +18,7 @@ export default function Header() {
               </button>
             </div>
             <div className="cardsPart row col-12">
-              <div className="itemCard fromLeft row col-3">
+              <div className="itemCard fromLeft row col-10 col-lg-3">
                 <div className="cardIcon col-12">
                   <img src="imgs/icons8-target-48.png" alt="" />
                 </div>
@@ -30,7 +30,7 @@ export default function Header() {
                   </p>
                 </div>
               </div>
-              <div className="itemCard fromBottom row col-3">
+              <div className="itemCard fromBottom row col-10 col-lg-3">
                 <div className="cardIcon col-12">
                   <img src="imgs/icons8-robot-64.png" alt="" />
                 </div>
@@ -43,7 +43,7 @@ export default function Header() {
                   </p>
                 </div>
               </div>
-              <div className="itemCard fromRight row col-3">
+              <div className="itemCard fromRight row col-10 col-lg-3">
                 <div className="cardIcon col-12">
                   <img src="imgs/icons8-salad-64.png" alt="" />
                 </div>

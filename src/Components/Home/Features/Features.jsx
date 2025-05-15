@@ -8,7 +8,7 @@ export default function Features() {
               <h3>Key Features</h3>
             </div>
             <div className="keysPart col-12 row">
-              <div className="keyItem fromBottom row col-6">
+              <div className="keyItem fromBottom row col-12 col-lg-6">
                 <div className="icon col-1">
                   <img src="imgs/icons8-paint-48.png" alt="" />
                 </div>
@@ -20,7 +20,7 @@ export default function Features() {
                   </p>
                 </div>
               </div>
-              <div className="keyItem fromBottom row col-6">
+              <div className="keyItem fromBottom row col-12 col-lg-6">
                 <div className="icon col-1">
                   <img src="imgs/icons8-chart-60.png" alt="" />
                 </div>
@@ -32,7 +32,7 @@ export default function Features() {
                   </p>
                 </div>
               </div>
-              <div className="keyItem fromBottom row col-6">
+              <div className="keyItem fromBottom row col-12 col-lg-6">
                 <div className="icon col-1">
                   <img src="imgs/icons8-robot-64.png" alt="" />
                 </div>
@@ -44,7 +44,7 @@ export default function Features() {
                   </p>
                 </div>
               </div>
-              <div className="keyItem fromBottom row col-6">
+              <div className="keyItem fromBottom row col-12 col-lg-6">
                 <div className="icon col-1">
                   <img src="imgs/icons8-salad-64.png" alt="" />
                 </div>
