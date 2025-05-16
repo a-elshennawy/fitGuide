@@ -17,7 +17,7 @@ export default function Body_Metrics() {
   });
 
   useEffect(() => {
-    fetch("http://myfitguide.runasp.net/api/Goal/GetAllGoals")
+    fetch("https://myfitguide.runasp.net/api/Goal/GetAllGoals")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch goals");
