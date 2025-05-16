@@ -17,10 +17,7 @@ export default function Body_Metrics() {
   });
 
   useEffect(() => {
-    fetch(
-      "https://corsproxy.io/?" +
-        encodeURIComponent("http://myfitguide.runasp.net/api/Goal/GetAllGoals")
-    )
+    fetch("http://myfitguide.runasp.net/api/Goal/GetAllGoals")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch goals");
