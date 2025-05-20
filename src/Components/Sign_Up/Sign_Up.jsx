@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function Sign_Up() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -15,9 +17,11 @@ export default function Sign_Up() {
     age: "",
     country: "",
     phone: "",
+    MuscleMass: "",
+    GymFrequency: "",
   });
-
   const [error, setError] = useState("");
+  const { setCurrentUser } = useContext(UserContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,17 +31,54 @@ export default function Sign_Up() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
+    setError("");
 
-    if (!formData.name || !formData.email || !formData.passWord) {
-      setError("Please fill in all required fields.");
-      return;
+    try {
+      const firstName = formData.name.split(" ")[0] || formData.name;
+      const lastName = formData.name.split(" ")[1] || "";
+
+      const queryParams = new URLSearchParams({
+        Email: formData.email,
+        FirstName: firstName,
+        LastName: lastName,
+        FullName: formData.name,
+        Gender: formData.gender,
+        PhoneNumber: formData.phone,
+        Age: parseInt(formData.age),
+        Country: formData.country,
+        Password: formData.passWord,
+      });
+
+      const response = await fetch(
+        `http://myfitguide.runasp.net/api/Account/Register?${queryParams.toString()}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Failed to register.");
+      }
+
+      const data = await response.json();
+      console.log("Token received:", data.token);
+      setCurrentUser(data);
+      navigate("/bodymetrics");
+    } catch (err) {
+      setError(err.message || "Registration failed. Please try again.");
+      console.error("Sign-up error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    localStorage.setItem("user", JSON.stringify(formData));
-
-    navigate("/bodymetrics");
   };
 
   useEffect(() => {
@@ -61,7 +102,7 @@ export default function Sign_Up() {
         <div className="container-fluid">
           <div className="signUpInner">
             <button className="backHome">
-              <Link to={"/"}>back to home</Link>
+              <Link to={"/"}> back to home </Link>
             </button>
 
             <form className="signUpForm row" onSubmit={handleSubmit}>
@@ -188,7 +229,7 @@ export default function Sign_Up() {
               </div>
 
               <button className="sigUpBtn col-12" type="submit">
-                Create Account
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
 
               <div className="bott col-12">

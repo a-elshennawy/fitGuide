@@ -1,53 +1,123 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function HealthConditions() {
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
   const [injuries, setInjuries] = useState([]);
   const [allergies, setAllergies] = useState([]);
-  const [selectedInjury, setSelectedInjury] = useState("");
-  const [selectedAllergy, setSelectedAllergy] = useState("");
+  const [selectedInjuryId, setSelectedInjuryId] = useState("");
+  const [selectedAllergyId, setSelectedAllergyId] = useState("");
   const [userInjuries, setUserInjuries] = useState([]);
   const [userAllergies, setUserAllergies] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://myfitguide.runasp.net/api/Injury/GetInjuries")
+    fetch("http://myfitguide.runasp.net/api/Injury/GetAllInjuries")
       .then((res) => res.json())
-      .then((data) => setInjuries(data))
+      .then((data) =>
+        setInjuries(
+          data.map((injury, index) => ({ id: index + 1, name: injury }))
+        )
+      )
       .catch((err) => console.error("Failed to load injuries:", err));
 
     fetch("http://myfitguide.runasp.net/api/Allergy/Show All Allergies")
       .then((res) => res.json())
-      .then((data) => setAllergies(data))
+      .then((data) =>
+        setAllergies(
+          data.map((allergy, index) => ({ id: index + 1, name: allergy }))
+        )
+      )
       .catch((err) => console.error("Failed to load allergies:", err));
   }, []);
 
-  const saveToLocalStorage = (updatedInjuries, updatedAllergies) => {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
-    user.injuries = updatedInjuries;
-    user.allergies = updatedAllergies;
-    localStorage.setItem("user", JSON.stringify(user));
-  };
-
   const handleAddInjury = () => {
-    if (selectedInjury === "None") {
+    if (selectedInjuryId === "None") {
       setUserInjuries([]);
-      saveToLocalStorage([], userAllergies);
-    } else if (selectedInjury && !userInjuries.includes(selectedInjury)) {
-      const updated = [...userInjuries, selectedInjury];
-      setUserInjuries(updated);
-      saveToLocalStorage(updated, userAllergies);
+    } else if (selectedInjuryId && !userInjuries.includes(selectedInjuryId)) {
+      setUserInjuries([...userInjuries, selectedInjuryId]);
     }
+    setSelectedInjuryId("");
   };
 
   const handleAddAllergy = () => {
-    if (selectedAllergy === "None") {
+    if (selectedAllergyId === "None") {
       setUserAllergies([]);
-      saveToLocalStorage(userInjuries, []);
-    } else if (selectedAllergy && !userAllergies.includes(selectedAllergy)) {
-      const updated = [...userAllergies, selectedAllergy];
-      setUserAllergies(updated);
-      saveToLocalStorage(userInjuries, updated);
+    } else if (
+      selectedAllergyId &&
+      !userAllergies.includes(selectedAllergyId)
+    ) {
+      setUserAllergies([...userAllergies, selectedAllergyId]);
+    }
+    setSelectedAllergyId("");
+  };
+
+  const handleContinue = async () => {
+    if (!currentUser?.token) {
+      setError("Please sign up first.");
+      return;
+    }
+
+    try {
+      for (const injuryId of userInjuries) {
+        const url = new URL(
+          "http://myfitguide.runasp.net/api/Injury/AddInjury"
+        );
+        url.searchParams.append("id", injuryId);
+
+        const resInjury = await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        });
+        if (!resInjury.ok) {
+          const errorText = await resInjury.text();
+          const injuryObject = injuries.find(
+            (i) => i.id === parseInt(injuryId)
+          );
+          throw new Error(
+            `Failed to add injury: ${
+              injuryObject?.name || injuryId
+            } - ${errorText}`
+          );
+        }
+      }
+
+      for (const allergyId of userAllergies) {
+        const url = new URL(
+          "http://myfitguide.runasp.net/api/Allergy/AddAllergy"
+        );
+        url.searchParams.append("id", allergyId);
+
+        const resAllergy = await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        });
+        if (!resAllergy.ok) {
+          const errorText = await resAllergy.text();
+          const allergyObject = allergies.find(
+            (a) => a.id === parseInt(allergyId)
+          );
+          throw new Error(
+            `Failed to add allergy: ${
+              allergyObject?.name || allergyId
+            } - ${errorText}`
+          );
+        }
+      }
+
+      navigate("/GoalSumm");
+      setError("");
+    } catch (err) {
+      setError(err.message || "Failed to save health conditions.");
+      console.error("Health conditions error:", err);
     }
   };
 
@@ -80,12 +150,12 @@ export default function HealthConditions() {
                 <select
                   name="injuries"
                   id="injuries"
-                  onChange={(e) => setSelectedInjury(e.target.value)}
+                  onChange={(e) => setSelectedInjuryId(e.target.value)}
                 >
                   <option value="None">None</option>
-                  {injuries.map((injury, index) => (
-                    <option key={index} value={injury}>
-                      {injury}
+                  {injuries.map((injury) => (
+                    <option key={injury.id} value={injury.id}>
+                      {injury.name}
                     </option>
                   ))}
                 </select>
@@ -93,9 +163,14 @@ export default function HealthConditions() {
                   add
                 </button>
                 <ul>
-                  {userInjuries.map((injury, index) => (
-                    <li key={index}>{injury}</li>
-                  ))}
+                  {userInjuries.map((injuryId) => {
+                    const injury = injuries.find(
+                      (i) => i.id === parseInt(injuryId)
+                    );
+                    return injury ? (
+                      <li key={injury.id}>{injury.name}</li>
+                    ) : null;
+                  })}
                 </ul>
               </div>
 
@@ -107,11 +182,11 @@ export default function HealthConditions() {
                 <select
                   name="allergies"
                   id="allergies"
-                  onChange={(e) => setSelectedAllergy(e.target.value)}
+                  onChange={(e) => setSelectedAllergyId(e.target.value)}
                 >
                   <option value="None">None</option>
                   {allergies.map((allergy) => (
-                    <option key={allergy.id} value={allergy.name}>
+                    <option key={allergy.id} value={allergy.id}>
                       {allergy.name}
                     </option>
                   ))}
@@ -120,18 +195,25 @@ export default function HealthConditions() {
                   add
                 </button>
                 <ul>
-                  {userAllergies.map((allergy, index) => (
-                    <li key={index}>{allergy}</li>
-                  ))}
+                  {userAllergies.map((allergyId) => {
+                    const allergy = allergies.find(
+                      (a) => a.id === parseInt(allergyId)
+                    );
+                    return allergy ? (
+                      <li key={allergy.id}>{allergy.name}</li>
+                    ) : null;
+                  })}
                 </ul>
               </div>
+
+              {error && <p className="text-danger mt-2 col-12">{error}</p>}
 
               <div className="btnsSec row col-12">
                 <button className="backBtn col-3">
                   <Link to={"/bodymetrics"}>back</Link>
                 </button>
-                <button className="continueBack col-8">
-                  <Link to={"/weightloss"}>continue</Link>
+                <button className="continueBack col-8" onClick={handleContinue}>
+                  continue
                 </button>
               </div>
 

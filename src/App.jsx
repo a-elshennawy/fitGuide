@@ -15,7 +15,7 @@ const Body_Metrics = lazy(() =>
 const HealthConditions = lazy(() =>
   import("./Components/HealthConditions/HealthConditions")
 );
-const WeightLoss = lazy(() => import("./Components/WeightLoss/WeightLoss"));
+const GoalSumm = lazy(() => import("./Components/GoalSumm/GoalSumm"));
 
 const createRoute = (path, element) => ({
   path,
@@ -38,7 +38,7 @@ function App() {
     createRoute("/signUp", <Sign_Up />),
     createRoute("/bodymetrics", <Body_Metrics />),
     createRoute("/healthconditions", <HealthConditions />),
-    createRoute("/weightloss", <WeightLoss />),
+    createRoute("/GoalSumm", <GoalSumm />),
   ]);
   return (
     <Suspense fallback={<LoadingSpinner />}>

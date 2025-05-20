@@ -1,26 +1,51 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function Sign_In() {
   const [email, setEmail] = useState("");
   const [passWord, setPassWord] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setCurrentUser } = useContext(UserContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (
-      storedUser &&
-      storedUser.email === email &&
-      storedUser.passWord === passWord
-    ) {
-      localStorage.setItem("currentUser", JSON.stringify(storedUser));
+    try {
+      const response = await fetch(
+        `http://myfitguide.runasp.net/api/Account/LogIn?EmailAddress=${encodeURIComponent(
+          email
+        )}&Password=${encodeURIComponent(passWord)}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed. Please check your credentials.");
+      }
+
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error("Unexpected response format.");
+      }
+
+      console.log("Login success:", data);
+      setCurrentUser(data);
       navigate("/");
-    } else {
-      setError("Incorrect email or password.");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
     }
   };
 

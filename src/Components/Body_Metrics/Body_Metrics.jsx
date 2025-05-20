@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function Body_Metrics() {
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [goals, setGoals] = useState([]);
   const [error, setError] = useState("");
@@ -14,18 +16,29 @@ export default function Body_Metrics() {
     waterMass: "",
     level: "",
     goal: "",
+    MuscleMass: "",
+    GymFrequency: "",
   });
 
   useEffect(() => {
-    fetch("http://myfitguide.runasp.net/api/Goal/GetAllGoals")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch goals");
-        }
-        return res.json();
-      })
-      .then((data) => setGoals(data))
-      .catch((err) => setError(err.message));
+    console.log("Current User in Body_Metrics:", currentUser);
+
+    const fetchGoals = async () => {
+      try {
+        const res = await fetch(
+          "http://myfitguide.runasp.net/api/Goal/GetAllGoals"
+        );
+        if (!res.ok) throw new Error("Failed to fetch goals");
+        const data = await res.json();
+        setGoals(data);
+        setError("");
+      } catch (err) {
+        setError("Failed to load goals. Please try again later.");
+        console.error("Fetch goals error:", err);
+      }
+    };
+
+    fetchGoals();
   }, []);
 
   const handleChange = (e) => {
@@ -36,22 +49,61 @@ export default function Body_Metrics() {
     }));
   };
 
-  const handleContinue = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (!user) {
-      alert("Please complete step 1 first.");
+  const handleContinue = async () => {
+    if (!currentUser?.token) {
+      setError("Please sign up first.");
       return;
     }
 
-    const updatedUser = {
-      ...user,
-      bodyMetrics: formData,
-    };
+    try {
+      const queryParams = new URLSearchParams({
+        Weight: formData.weight,
+        Height: formData.height,
+        fitnessLevel: formData.level,
+        Fat: formData.fats || 0,
+        WaterMass: formData.waterMass || 0,
+        MuscleMass: formData.MuscleMass || 0,
+        GymFrequency: formData.GymFrequency || 0,
+      });
 
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+      const resMetrics = await fetch(
+        `http://myfitguide.runasp.net/api/UserMetrics/EnterMetrics?${queryParams.toString()}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${currentUser.token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
-    navigate("/healthconditions");
+      if (!resMetrics.ok) throw new Error(await resMetrics.text());
+
+      const urlGoal = new URL(
+        "http://myfitguide.runasp.net/api/Goal/SelectGoal"
+      );
+      urlGoal.searchParams.append("GoalName", formData.goal);
+
+      const resGoal = await fetch(urlGoal.toString(), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      });
+
+      if (!resGoal.ok) {
+        const errorText = await resGoal.text();
+        throw new Error(
+          `Failed to select goal: ${formData.goal} - ${errorText}`
+        );
+      }
+
+      navigate("/healthconditions");
+    } catch (err) {
+      setError(err.message || "Failed to save metrics.");
+      console.error("Metrics error:", err);
+    }
   };
 
   return (
@@ -80,7 +132,7 @@ export default function Body_Metrics() {
                 <input
                   required
                   type="text"
-                  placeholder="0.0 lbs"
+                  placeholder="0.0 kg"
                   id="weight"
                   name="weight"
                   value={formData.weight}
@@ -127,6 +179,32 @@ export default function Body_Metrics() {
                 />
               </div>
 
+              <div className="inputContainer col-lg-5 col-10">
+                <label htmlFor="MuscleMass">muscle mass</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="0.0 kg"
+                  id="MuscleMass"
+                  name="MuscleMass"
+                  value={formData.MuscleMass}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="inputContainer col-lg-5 col-10">
+                <label htmlFor="GymFrequency">gym frequency</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="0.0"
+                  id="GymFrequency"
+                  name="GymFrequency"
+                  value={formData.GymFrequency}
+                  onChange={handleChange}
+                />
+              </div>
+
               <label htmlFor="level">your gym experience ?</label>
               <select
                 required
@@ -156,8 +234,8 @@ export default function Body_Metrics() {
                 <option value="" disabled>
                   select your goal
                 </option>
-                {goals.map((goal, index) => (
-                  <option key={index} value={goal}>
+                {goals.map((goal) => (
+                  <option key={goal} value={goal}>
                     {goal}
                   </option>
                 ))}

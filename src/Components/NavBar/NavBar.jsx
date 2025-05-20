@@ -34,7 +34,7 @@ export default function NavBar({ currentUser }) {
       <div
         className="offcanvas offcanvas-start"
         data-bs-scroll="true"
-        tabindex="-1"
+        tabIndex="-1"
         id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel"
       >
@@ -44,7 +44,7 @@ export default function NavBar({ currentUser }) {
               <img src="imgs/icons8-running-48.png" alt="logo" />
               FitGuide
             </NavLink>
-            <h6>welcome, {currentUser?.name}</h6>
+            <h6>welcome, {currentUser?.fullName}</h6>{" "}
           </div>
           <button
             type="button"
@@ -65,7 +65,7 @@ export default function NavBar({ currentUser }) {
             </li>
             <li className="offcanvItem">
               <img src="imgs/icons8-user-32.png" alt="profile icon" />
-              <NavLink to="workout">workout</NavLink>
+              <NavLink to="profile">profile</NavLink>
             </li>
           </ul>
         </div>
@@ -98,14 +98,15 @@ export default function NavBar({ currentUser }) {
                 <li className="navItem">
                   <img src="imgs/icons8-user-32.png" alt="profile icon" />
                   <NavLink to="profile" className={isActive("/profile")}>
+                    {" "}
                     profile
                   </NavLink>
                 </li>
               </ul>
             </div>
             <div className="profile col-3">
-              <h5>{currentUser?.name || "User Name"}</h5>
-              <span>{getInitials(currentUser?.name)}</span>
+              <h5>{currentUser?.fullName || "User Name"}</h5>{" "}
+              <span>{getInitials(currentUser?.fullName)}</span>{" "}
             </div>
           </div>
         </div>

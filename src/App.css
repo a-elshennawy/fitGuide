@@ -475,8 +475,9 @@ body {
   bottom: 0%;
   left: 0%;
   right: 0%;
-  padding: 30px 10px;
+  padding: 20px 10px;
   border-top: 1px solid #000;
+  background-color: #fff;
 
   .footerInner {
     justify-content: space-between;
@@ -948,7 +949,7 @@ body {
 }
 
 /* weightLoss */
-.weightLoss {
+.GoalSumm {
   position: relative;
   padding: 20px 0px;
 
@@ -959,7 +960,7 @@ body {
     color: #3cb371;
   }
 
-  .weightLossInner {
+  .GoalSummInner {
     justify-content: center;
     align-items: center;
 
@@ -1066,7 +1067,8 @@ body {
 
 /* profile */
 .profile {
-  padding: 20px 0px;
+  padding: 100px 0px;
+
   .profileInner {
     justify-content: center;
     align-items: baseline;
@@ -1097,6 +1099,7 @@ body {
     .profileEdit {
       justify-content: start;
       align-items: center;
+      padding: 30px 0px;
 
       .img {
         span {
@@ -1108,7 +1111,7 @@ body {
         }
       }
 
-      .editBtn {
+      .Btns {
         text-align: end;
 
         .editPBtn {
@@ -1152,6 +1155,7 @@ body {
 
     .workoutItems {
       padding: 20px 10px;
+      height: 80dvh;
       border-radius: 10px;
       background-color: #fff;
       justify-content: center;
@@ -1167,17 +1171,23 @@ body {
         justify-content: center;
         align-items: center;
 
+        .details {
+          padding: 10px 0px;
+        }
+
         .reps {
           text-align: end;
         }
 
-        .try {
+        .btns {
           background-color: #d9d9d9;
           padding: 10px;
           text-align: center;
+          justify-content: center;
+          gap: 10px;
 
-          .tryBtn {
-            width: 90%;
+          .tryBtn,
+          .watch {
             border: none;
             border-radius: 5px;
             background-color: #3cb371;
@@ -1185,21 +1195,6 @@ body {
             color: #fff;
           }
         }
-      }
-    }
-
-    .upcoming {
-      padding: 20px 10px;
-      border-radius: 10px;
-      background-color: #fff;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-
-      .upSec {
-        background-color: #d9d9d9;
-        padding: 10px;
-        border-radius: 10px;
       }
 
       .btns {
@@ -1440,7 +1435,11 @@ body {
           border-radius: 5px;
           padding: 5px 10px;
           background-image: linear-gradient(to left, #008b8b, #3cb371);
-          color: #fff;
+
+          a {
+            text-decoration: none;
+            color: #fff;
+          }
         }
       }
     }
@@ -1483,14 +1482,35 @@ body {
         .head {
           justify-content: space-between;
           align-items: center;
+          .food-search-container {
+            .inpContainer {
+              input {
+                padding: 5px;
+                border: 1px solid #d9d9d9;
+                outline: none;
+                transition: all 0.3s ease-in-out;
+                &:focus {
+                  border: none;
+                  outline: none;
+                  box-shadow: 0 0 10px #3cb371;
+                }
+              }
+              .dropdown-menu {
+                padding: 5px;
 
-          .addFood {
-            padding: 5px 10px;
-            background-color: #e6e6e8;
-            border-radius: 10px;
-            color: #3cb371;
-            border: none;
-            font-family: inter-bold !important;
+                .dropdown-item {
+                  border: none;
+                }
+              }
+            }
+            .addFood {
+              padding: 5px 10px;
+              background-color: #e6e6e8;
+              border-radius: 10px;
+              color: #3cb371;
+              border: none;
+              font-family: inter-bold !important;
+            }
           }
         }
         ul {

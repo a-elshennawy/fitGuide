@@ -1,94 +1,439 @@
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "../Contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../Components/loadingSpinner";
 import UpBtn from "../UpBtn";
 import { Helmet } from "react-helmet";
 
 export default function Workouts() {
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [exercises, setExercises] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [showSwitchPlanModal, setShowSwitchPlanModal] = useState(false);
+  const [availablePlans, setAvailablePlans] = useState([]);
+  const [selectedPlanType, setSelectedPlanType] = useState("");
+  const [loadingPlans, setLoadingPlans] = useState(false);
+  const [plansError, setPlansError] = useState("");
+  const [isUpdatingPlan, setIsUpdatingPlan] = useState(false);
+  const [updatePlanError, setUpdatePlanError] = useState("");
+  const [updatePlanSuccess, setUpdatePlanSuccess] = useState("");
+
+  const fetchWorkouts = async () => {
+    if (!currentUser || !currentUser.token) {
+      setLoading(false);
+      setError("Please log in to view workouts.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+    };
+
+    try {
+      const response = await fetch(
+        "http://myfitguide.runasp.net/api/WorkOut/GetMyWorkOutPlan",
+        { headers }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("API Response from GetMyWorkOutPlan:", data);
+
+        if (
+          data &&
+          Array.isArray(data) &&
+          data.length > 0 &&
+          Array.isArray(data[0].exercises)
+        ) {
+          setExercises(
+            data[0].exercises.slice(0, 3).map((ex, index) => ({
+              ...ex,
+              exerciseId: ex.exerciseId || index + 1,
+            }))
+          );
+        } else {
+          setExercises([]);
+        }
+      } else {
+        console.error("Failed to fetch workouts:", response.status);
+        setExercises([]);
+      }
+    } catch (err) {
+      console.error("Error fetching workouts:", err);
+      setError("Failed to load workouts.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkouts();
+  }, [currentUser]);
+
+  const handleWatchTutorial = async (exerciseId) => {
+    if (!currentUser || !currentUser.token) {
+      alert("Please log in to watch tutorials.");
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+    };
+
+    try {
+      const response = await fetch(
+        `http://myfitguide.runasp.net/api/WorkOut/WatchTutorial?id=${exerciseId}`,
+        { headers }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Failed to fetch tutorial for exercise ID ${exerciseId}:`,
+          response.status,
+          response.statusText,
+          errorText
+        );
+        alert(
+          `Failed to load tutorial. Status: ${response.status}. Please try again later.`
+        );
+        return;
+      }
+
+      const tutorialLink = await response.text();
+      console.log(`Tutorial link received: ${tutorialLink}`);
+
+      if (tutorialLink && tutorialLink.startsWith("http")) {
+        window.open(tutorialLink, "_blank");
+      } else {
+        console.error("Invalid tutorial link received:", tutorialLink);
+        alert("Invalid tutorial link received from the server.");
+      }
+    } catch (err) {
+      console.error("Error watching tutorial:", err);
+      alert(
+        "An error occurred while trying to watch the tutorial. Check the console for details."
+      );
+    }
+  };
+
+  // NEW FUNCTION: Handle "Try it" button click for AI tracking
+  const handleTryIt = async (exerciseId) => {
+    if (!currentUser || !currentUser.token) {
+      alert("Please log in to try this workout.");
+      return;
+    }
+
+    try {
+      // Request access to the user's camera
+      // The 'video: true' constraint requests access to video input
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // If successful, you've gained access to the camera.
+      // You can then navigate to a new page where the AI model will be used.
+      console.log("Camera access granted for exercise:", exerciseId);
+      alert("Camera access granted! Redirecting to AI tracking page...");
+      // IMPORTANT: Replace '/ai-tracking' with the actual path to your AI tracking page
+      // You might also want to pass the exerciseId to the tracking page
+      navigate(`/ai-tracking/${exerciseId}`);
+
+      // You might want to stop the stream if you don't immediately use it
+      // in this component, to avoid keeping the camera on unnecessarily.
+      // However, if you navigate immediately, the new page will handle the stream.
+      // stream.getTracks().forEach(track => track.stop());
+    } catch (err) {
+      // Handle cases where camera access is denied or not available
+      if (err.name === "NotAllowedError") {
+        alert(
+          "Camera access denied. Please allow camera access in your browser settings to use this feature."
+        );
+      } else if (
+        err.name === "NotFoundError" ||
+        err.name === "DevicesNotFoundError"
+      ) {
+        alert(
+          "No camera found. Please ensure a camera is connected and enabled."
+        );
+      } else {
+        console.error("Error accessing camera:", err);
+        alert(
+          "An error occurred while trying to access your camera. Please check your console for details."
+        );
+      }
+    }
+  };
+
+  const fetchAvailablePlans = async () => {
+    if (!currentUser || !currentUser.token) {
+      setPlansError("Please log in to view available plans.");
+      return;
+    }
+
+    setLoadingPlans(true);
+    setPlansError("");
+
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+    };
+
+    try {
+      const response = await fetch(
+        "http://myfitguide.runasp.net/api/WorkOut/ShowAllWorkOutPlans",
+        { headers }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Available Plans API Response:", data);
+        setAvailablePlans(data);
+
+        if (data.length > 0) {
+          setSelectedPlanType(data[0].planType || data[0].name || data[0]);
+        }
+      } else {
+        console.error("Failed to fetch available plans:", response.status);
+        setPlansError("Failed to load available plans.");
+        setAvailablePlans([]);
+      }
+    } catch (err) {
+      console.error("Error fetching available plans:", err);
+      setPlansError("An error occurred while fetching plans.");
+    } finally {
+      setLoadingPlans(false);
+    }
+  };
+
+  const handleOpenSwitchPlanModal = () => {
+    setUpdatePlanError("");
+    setUpdatePlanSuccess("");
+    setShowSwitchPlanModal(true);
+    fetchAvailablePlans();
+  };
+
+  const handleCloseSwitchPlanModal = () => {
+    setShowSwitchPlanModal(false);
+    setUpdatePlanError("");
+    setUpdatePlanSuccess("");
+    setAvailablePlans([]);
+    setSelectedPlanType("");
+  };
+
+  const handleUpdateWorkoutPlan = async () => {
+    if (!currentUser || !currentUser.token) {
+      setUpdatePlanError("Please log in to update your plan.");
+      return;
+    }
+    if (!selectedPlanType) {
+      setUpdatePlanError("Please select a plan type.");
+      return;
+    }
+
+    setIsUpdatingPlan(true);
+    setUpdatePlanError("");
+    setUpdatePlanSuccess("");
+
+    const headers = {
+      Authorization: `Bearer ${currentUser.token}`,
+      "Content-Type": "application/json",
+    };
+
+    const apiUrl = `http://myfitguide.runasp.net/api/WorkOut/updateWorkOut?planType=${encodeURIComponent(
+      selectedPlanType
+    )}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "PUT",
+        headers: headers,
+      });
+
+      if (response.ok) {
+        setUpdatePlanSuccess("Workout plan updated successfully!");
+        await fetchWorkouts();
+        handleCloseSwitchPlanModal();
+      } else {
+        const errorText = await response.text();
+        console.error(
+          "Failed to update workout plan:",
+          response.status,
+          errorText
+        );
+        setUpdatePlanError(
+          `Failed to update plan: ${response.statusText}. Details: ${errorText}`
+        );
+      }
+    } catch (err) {
+      console.error("Error updating workout plan:", err);
+      setUpdatePlanError("An error occurred while updating the workout plan.");
+    } finally {
+      setIsUpdatingPlan(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div className="text-danger">{error}</div>;
+  }
+
   return (
     <>
+      {" "}
       <Helmet>
-        <title>FitGuide - Workouts</title>
-      </Helmet>
+        <title>FitGuide - Workouts</title>{" "}
+      </Helmet>{" "}
       <div className="workouts">
+        {" "}
         <div className="container-fluid">
+          {" "}
           <div className="workoutsInner row">
+            {" "}
             <div className="workoutItems col-lg-10 col-12 row">
-              <div className="workout fromBottom row col-lg-8 col-12">
-                <div className="img col-lg-1 col-5">
-                  <img src="imgs/icons8-deadlift-50.png" alt="" />
+              {" "}
+              {exercises.map((exercise) => (
+                <div
+                  key={exercise.exerciseId}
+                  className="workout fromBottom row col-lg-8 col-12"
+                >
+                  {" "}
+                  <div className="img col-lg-1 col-5">
+                    {" "}
+                    <img src="imgs/icons8-arm-50.png" alt="Arm icon" />{" "}
+                  </div>{" "}
+                  <div className="details col-lg-9 col-5">
+                    <h4>{exercise.name}</h4>{" "}
+                    <p>
+                      {" "}
+                      {exercise.description ||
+                        `targets ${exercise.targetMuscle}`}{" "}
+                    </p>{" "}
+                  </div>{" "}
+                  <div className="reps col-lg-2 col-12">
+                    {" "}
+                    <h4>
+                      {exercise.numberOfSets} x {exercise.numberOfReps}{" "}
+                    </h4>{" "}
+                  </div>{" "}
+                  <div className="btns row col-12">
+                    {" "}
+                    {/* MODIFIED: Added onClick handler for "Try it" button */}{" "}
+                    <button
+                      className="tryBtn col-5"
+                      onClick={() => handleTryIt(exercise.exerciseId)}
+                    >
+                      try it
+                    </button>{" "}
+                    <button
+                      className="watch col-5"
+                      onClick={() => handleWatchTutorial(exercise.exerciseId)}
+                    >
+                      watch{" "}
+                    </button>{" "}
+                  </div>{" "}
                 </div>
-                <div className="details col-lg-9 col-5">
-                  <h4>squats</h4>
-                  <p>targets legs and gluts</p>
-                </div>
-                <div className="reps col-lg-2 col-12">
-                  <h4>3 x 12</h4>
-                </div>
-                <div className="try col-12">
-                  <button className="tryBtn">try it</button>
-                </div>
-              </div>
-
-              <div className="workout fromBottom row col-lg-8 col-12">
-                <div className="img col-lg-1 col-5">
-                  <img src="imgs/icons8-arm-50.png" alt="" />
-                </div>
-                <div className="details col-lg-9 col-5">
-                  <h4>push-ups</h4>
-                  <p>builds chest and triceps</p>
-                </div>
-                <div className="reps col-lg-2 col-12">
-                  <h4>3 x 10</h4>
-                </div>
-                <div className="try col-12">
-                  <button className="tryBtn">try it</button>
-                </div>
-              </div>
-
-              <div className="workout fromBottom row col-lg-8 col-12">
-                <div className="img col-lg-1 col-5">
-                  <img src="imgs/icons8-deadlift-50.png" alt="" />
-                </div>
-                <div className="details col-lg-9 col-5">
-                  <h4>deadlift</h4>
-                  <p>full body compound movement</p>
-                </div>
-                <div className="reps col-lg-2 col-12">
-                  <h4>3 x 8</h4>
-                </div>
-                <div className="try col-12">
-                  <button className="tryBtn">try it</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="upcoming col-lg-10 col-12 row">
-              <h3 className="col-10">upcoming workouts</h3>
-              <div className="upSec tomorrow fromLeft col-lg-5 col-10">
-                <h5>tomorrow</h5>
-                <ul>
-                  <li>bench press</li>
-                  <li>rows</li>
-                  <li>shoulder press</li>
-                </ul>
-              </div>
-              <div className="upSec nextWeek fromRight col-lg-5 col-10">
-                <h5>next week</h5>
-                <ul>
-                  <li>leg press</li>
-                  <li>lunges</li>
-                  <li>calf raises</li>
-                </ul>
-              </div>
+              ))}{" "}
               <div className="btns fromLeft col-lg-10 col-12">
-                <button className="switch">🔄 Switch Plan</button>
-                <button className="edit">✏ Edit Plan</button>
-                <button className="delete">🗑 Delete Plan</button>
-              </div>
-            </div>
-          </div>
+                {" "}
+                <button className="switch" onClick={handleOpenSwitchPlanModal}>
+                  🔄 Switch Plan{" "}
+                </button>{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
+      {showSwitchPlanModal && (
+        <div
+          className="modal"
+          style={{
+            display: "block",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            overflowY: "auto",
+          }}
+        >
+          {" "}
+          <div className="modal-dialog modal-dialog-centered">
+            {" "}
+            <div className="modal-content">
+              {" "}
+              <div className="modal-header">
+                {" "}
+                <h5 className="modal-title">Switch Workout Plan</h5>{" "}
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseSwitchPlanModal}
+                ></button>{" "}
+              </div>{" "}
+              <div className="modal-body">
+                {" "}
+                {updatePlanError && (
+                  <div className="alert alert-danger">{updatePlanError}</div>
+                )}{" "}
+                {updatePlanSuccess && (
+                  <div className="alert alert-success">{updatePlanSuccess}</div>
+                )}{" "}
+                {loadingPlans ? (
+                  <LoadingSpinner />
+                ) : plansError ? (
+                  <div className="alert alert-danger">{plansError}</div>
+                ) : (
+                  <div className="mb-3">
+                    {" "}
+                    <label htmlFor="planSelect" className="form-label">
+                      Select a new workout plan:{" "}
+                    </label>{" "}
+                    <select
+                      id="planSelect"
+                      className="form-select"
+                      value={selectedPlanType}
+                      onChange={(e) => setSelectedPlanType(e.target.value)}
+                    >
+                      {" "}
+                      <option value="">-- Please select --</option>{" "}
+                      {availablePlans.map((plan, index) => (
+                        <option
+                          key={plan.planType || plan.name || index}
+                          value={plan.planType || plan.name || plan}
+                        >
+                          {" "}
+                          {plan.name || plan.planType || plan}{" "}
+                        </option>
+                      ))}{" "}
+                    </select>{" "}
+                  </div>
+                )}{" "}
+              </div>{" "}
+              <div className="modal-footer">
+                {" "}
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseSwitchPlanModal}
+                >
+                  Cancel{" "}
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleUpdateWorkoutPlan}
+                  disabled={isUpdatingPlan || !selectedPlanType}
+                >
+                  {" "}
+                  {isUpdatingPlan ? "Switching..." : "Switch Plan"}{" "}
+                </button>{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
         </div>
-      </div>
-
-      <UpBtn />
+      )}
+      <UpBtn />{" "}
     </>
   );
 }

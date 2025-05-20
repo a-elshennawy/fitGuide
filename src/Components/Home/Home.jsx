@@ -7,9 +7,11 @@ import { Helmet } from "react-helmet";
 import TodayWorkout from "./TodayWorkout/TodayWorkout";
 import FoodDiary from "./FoodDiary/FoodDiary";
 import UpBtn from "../UpBtn";
+import { useContext } from "react";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function Home() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const { currentUser } = useContext(UserContext);
 
   return (
     <>
