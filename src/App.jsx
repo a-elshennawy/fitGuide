@@ -16,6 +16,9 @@ const HealthConditions = lazy(() =>
   import("./Components/HealthConditions/HealthConditions")
 );
 const GoalSumm = lazy(() => import("./Components/GoalSumm/GoalSumm"));
+const WorkoutFeedBack = lazy(() =>
+  import("./Components/WorkoutFeedBack/WorkoutFeedBack")
+);
 
 const createRoute = (path, element) => ({
   path,
@@ -32,6 +35,7 @@ function App() {
         createRoute("", <Home />),
         createRoute("workout", <Workouts />),
         createRoute("profile", <Profile />),
+        createRoute("/workoutFeedback", <WorkoutFeedBack />),
       ],
     },
     createRoute("/SignIn", <Sign_In />),

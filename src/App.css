@@ -1526,6 +1526,110 @@ body {
   }
 }
 
+/* workout log */
+.log {
+  .logInner {
+    justify-content: center;
+    align-items: center;
+
+    .logBar {
+      position: static;
+      top: 0%;
+      left: 0%;
+      right: 0%;
+      padding: 20px 10px;
+      background-color: #fff;
+      justify-content: space-between;
+
+      .saveBtn {
+        width: fit-content;
+        background-color: #3cb371;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        color: #fff;
+      }
+    }
+
+    .logContent {
+      padding: 50px 0px;
+      justify-content: center;
+      align-items: start;
+      gap: 20px;
+
+      .exVid {
+        background-color: #fff;
+        padding: 0;
+        border-radius: 10px;
+        overflow: hidden;
+
+        .footer {
+          padding: 10px;
+          p {
+            padding: 0;
+            margin: 0;
+          }
+        }
+      }
+
+      .exScore {
+        background-color: #fff;
+        padding: 20px 10px;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        .score {
+          width: 200px;
+          height: 200px;
+          border: 5px solid #3cb371;
+          border-radius: 50%;
+          position: relative;
+
+          h1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+
+      .exFeedBAck {
+        background-color: #fff;
+        padding: 20px 10px;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .exDetails {
+        background-color: #fff;
+        padding: 20px 10px;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        .details {
+          ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+              margin: 10px 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 /* upbtn */
 .upBtn {
   position: fixed;
