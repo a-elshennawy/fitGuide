@@ -6,6 +6,8 @@ import { UserContext } from "../Contexts/UserContext";
 
 export default function Sign_Up() {
   const [loading, setLoading] = useState(false);
+  const [emailChecking, setEmailChecking] = useState(false);
+  const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -31,9 +33,60 @@ export default function Sign_Up() {
     }));
   };
 
+  const checkEmailExists = async (email) => {
+    if (!email) return false;
+
+    setEmailChecking(true);
+    setEmailError("");
+
+    try {
+      const response = await fetch(
+        `http://myfitguide.runasp.net/api/Account/emailExist?email=${encodeURIComponent(
+          email
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to check email");
+      }
+
+      const exists = await response.json();
+      return exists;
+    } catch (err) {
+      console.error("Email check error:", err);
+      return false;
+    } finally {
+      setEmailChecking(false);
+    }
+  };
+
+  const handleEmailBlur = async () => {
+    if (!formData.email) return;
+
+    const exists = await checkEmailExists(formData.email);
+    if (exists) {
+      setEmailError("Email already exists");
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || emailChecking) return;
+
+    const exists = await checkEmailExists(formData.email);
+    if (exists) {
+      setEmailError("Email already exists");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -134,12 +187,27 @@ export default function Sign_Up() {
                 <input
                   required
                   type="email"
-                  className="form-control"
+                  className={`form-control ${emailError ? "is-invalid" : ""}`}
                   placeholder="Email address"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  onBlur={handleEmailBlur}
+                  disabled={emailChecking}
                 />
+                {emailChecking && (
+                  <span className="input-group-text">
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </span>
+                )}
+                {emailError && (
+                  <div className="invalid-feedback">{emailError}</div>
+                )}
               </div>
 
               <div className="input-group">
