@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function WorkoutFeedBack() {
   return (
     <>
@@ -13,7 +11,7 @@ export default function WorkoutFeedBack() {
               <button className="saveBtn">💾 save session</button>
             </div>
             <div className="logContent row col-11">
-              <div className="exVid col-6">
+              <div className="exVid col-10 col-lg-6">
                 <div className="vidRec">
                   <video src=""></video>
                 </div>
@@ -23,7 +21,7 @@ export default function WorkoutFeedBack() {
                   </p>
                 </div>
               </div>
-              <div className="exScore row col-4">
+              <div className="exScore row col-10 col-lg-4">
                 <h4 className="col-12">
                   <strong>performance score</strong>
                 </h4>
@@ -31,12 +29,12 @@ export default function WorkoutFeedBack() {
                   <h1>86%</h1>
                 </div>
               </div>
-              <div className="exFeedBAck row col-6">
+              <div className="exFeedBAck row col-10 col-lg-6">
                 <h4 className="col-12">
                   <strong>AI feedback on your form</strong>
                 </h4>
               </div>
-              <div className="exDetails row col-4">
+              <div className="exDetails row col-10 col-lg-4">
                 <h4 className="col-12">
                   <strong>exercise details</strong>
                 </h4>

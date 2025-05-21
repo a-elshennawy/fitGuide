@@ -6,7 +6,6 @@ export default function DailySummary() {
   const { currentUser } = useContext(UserContext);
   const [dailySummary, setDailySummary] = useState(null);
   const [weightData, setWeightData] = useState(null);
-  // Removed: const [previousWeightData, setPreviousWeightData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -38,7 +37,7 @@ export default function DailySummary() {
 
     try {
       const dailySummaryRes = await fetch(
-        "http://myfitguide.runasp.net/api/HomeContoller/DailySummary",
+        "https://myfirtguide.runasp.net/api/HomeContoller/DailySummary",
         { headers }
       );
       if (dailySummaryRes.ok) {
@@ -51,23 +50,20 @@ export default function DailySummary() {
       }
 
       const weightRes = await fetch(
-        "http://myfitguide.runasp.net/api/HomeContoller/WeightTracker",
+        "https://myfirtguide.runasp.net/api/HomeContoller/WeightTracker",
         { headers }
       );
       if (weightRes.ok) {
         const weightTrackerData = await weightRes.json();
         console.log("Weight Tracker API Response:", weightTrackerData);
         if (weightTrackerData && weightTrackerData.length > 0) {
-          setWeightData(weightTrackerData[0]); // Current weight is the most recent
-          // Removed: setPreviousWeightData(weightTrackerData[1]); // This line is no longer needed
+          setWeightData(weightTrackerData[0]);
         } else {
           setWeightData(null);
-          // Removed: setPreviousWeightData(null);
         }
       } else {
         console.error("Failed to fetch weight tracker data:", weightRes.status);
         setWeightData(null);
-        // Removed: setPreviousWeightData(null); // Ensure previous is also null on error
       }
     } catch (err) {
       console.error("Error fetching daily summary data:", err);
@@ -129,7 +125,7 @@ export default function DailySummary() {
     if (inputGymFrequency !== "")
       params.append("GymFrequency", parseFloat(inputGymFrequency));
 
-    const apiUrl = `http://myfitguide.runasp.net/api/UserMetrics/UpdateMetrics?${params.toString()}`;
+    const apiUrl = `https://myfirtguide.runasp.net/api/UserMetrics/UpdateMetrics?${params.toString()}`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -139,7 +135,7 @@ export default function DailySummary() {
 
       if (response.ok) {
         setUpdateMetricsSuccess("Metrics updated successfully!");
-        await fetchData(); // Re-fetch all data to reflect changes
+        await fetchData();
         handleCloseUpdateModal();
       } else {
         const errorText = await response.text();

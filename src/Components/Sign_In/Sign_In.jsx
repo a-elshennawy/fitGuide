@@ -16,7 +16,7 @@ export default function Sign_In() {
 
     try {
       const response = await fetch(
-        `http://myfitguide.runasp.net/api/Account/LogIn?EmailAddress=${encodeURIComponent(
+        `https://myfirtguide.runasp.net/api/Account/LogIn?EmailAddress=${encodeURIComponent(
           email
         )}&Password=${encodeURIComponent(passWord)}`,
         {

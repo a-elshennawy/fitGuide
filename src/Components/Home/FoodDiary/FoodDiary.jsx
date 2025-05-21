@@ -44,7 +44,7 @@ export default function FoodDiary() {
 
       try {
         const response = await fetch(
-          "http://myfitguide.runasp.net/api/HomeContoller/getAllFood",
+          "https://myfirtguide.runasp.net/api/HomeContoller/getAllFood",
           {
             method: "POST",
             headers: headers,
@@ -93,7 +93,7 @@ export default function FoodDiary() {
 
     const todayDate = getTodayDate();
 
-    const apiUrl = `http://myfitguide.runasp.net/api/HomeContoller/FoodDiary?date=${encodeURIComponent(
+    const apiUrl = `https://myfirtguide.runasp.net/api/HomeContoller/FoodDiary?date=${encodeURIComponent(
       todayDate
     )}`;
 
@@ -178,7 +178,7 @@ export default function FoodDiary() {
     };
 
     const encodedFoodName = encodeURIComponent(selectedFood.name);
-    const apiUrl = `http://myfitguide.runasp.net/api/HomeContoller/AddFood?FoodName=${encodedFoodName}&Quantity=${quantity}`;
+    const apiUrl = `https://myfirtguide.runasp.net/api/HomeContoller/AddFood?FoodName=${encodedFoodName}&Quantity=${quantity}`;
 
     try {
       const response = await fetch(apiUrl, {

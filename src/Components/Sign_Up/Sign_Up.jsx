@@ -41,7 +41,7 @@ export default function Sign_Up() {
 
     try {
       const response = await fetch(
-        `http://myfitguide.runasp.net/api/Account/emailExist?email=${encodeURIComponent(
+        `https://myfirtguide.runasp.net/api/Account/emailExist?email=${encodeURIComponent(
           email
         )}`,
         {
@@ -107,7 +107,7 @@ export default function Sign_Up() {
       });
 
       const response = await fetch(
-        `http://myfitguide.runasp.net/api/Account/Register?${queryParams.toString()}`,
+        `https://myfirtguide.runasp.net/api/Account/Register?${queryParams.toString()}`,
         {
           method: "POST",
           headers: {

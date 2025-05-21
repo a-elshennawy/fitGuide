@@ -35,7 +35,7 @@ export default function Profile() {
 
       try {
         const metricsRes = await fetch(
-          "http://myfitguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
+          "https://myfirtguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
           { headers }
         );
         if (metricsRes.ok) {
@@ -57,7 +57,7 @@ export default function Profile() {
         }
 
         const goalRes = await fetch(
-          "http://myfitguide.runasp.net/api/Goal/GetUserGoal",
+          "https://myfirtguide.runasp.net/api/Goal/GetUserGoal",
           { headers }
         );
         if (goalRes.ok) {
@@ -69,7 +69,7 @@ export default function Profile() {
         }
 
         const workoutRes = await fetch(
-          "http://myfitguide.runasp.net/api/WorkOut/GetMyWorkOutPlan",
+          "https://myfirtguide.runasp.net/api/WorkOut/GetMyWorkOutPlan",
           { headers }
         );
         if (workoutRes.ok) {

@@ -22,7 +22,7 @@ export default function GoalSumm() {
         };
 
         const metricsRes = await fetch(
-          "http://myfitguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
+          "https://myfirtguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
           { headers }
         );
         if (metricsRes.ok) {
@@ -44,7 +44,7 @@ export default function GoalSumm() {
         }
 
         const goalRes = await fetch(
-          "http://myfitguide.runasp.net/api/Goal/GetUserGoal",
+          "https://myfirtguide.runasp.net/api/Goal/GetUserGoal",
           { headers }
         );
         if (goalRes.ok) {
@@ -85,7 +85,7 @@ export default function GoalSumm() {
       };
 
       const nutritionPlanRes = await fetch(
-        "http://myfitguide.runasp.net/api/NutritionPlan/GenerateNutritionPlan",
+        "https://myfirtguide.runasp.net/api/NutritionPlan/GenerateNutritionPlan",
         { method: "POST", headers }
       );
       if (!nutritionPlanRes.ok) {
@@ -94,7 +94,7 @@ export default function GoalSumm() {
       console.log("Nutrition plan generated successfully.");
 
       const workoutPlanRes = await fetch(
-        "http://myfitguide.runasp.net/api/WorkOut/GenerateWorkOut",
+        "https://myfirtguide.runasp.net/api/WorkOut/GenerateWorkOut",
         { method: "POST", headers }
       );
       if (!workoutPlanRes.ok) {

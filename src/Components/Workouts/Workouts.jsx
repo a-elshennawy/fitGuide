@@ -37,7 +37,7 @@ export default function Workouts() {
 
     try {
       const response = await fetch(
-        "http://myfitguide.runasp.net/api/WorkOut/GetMyWorkOutPlan",
+        "https://myfirtguide.runasp.net/api/WorkOut/GetMyWorkOutPlan",
         { headers }
       );
       if (response.ok) {
@@ -87,7 +87,7 @@ export default function Workouts() {
 
     try {
       const response = await fetch(
-        `http://myfitguide.runasp.net/api/WorkOut/WatchTutorial?id=${exerciseId}`,
+        `https://myfirtguide.runasp.net/api/WorkOut/WatchTutorial?id=${exerciseId}`,
         { headers }
       );
 
@@ -183,7 +183,7 @@ export default function Workouts() {
 
     try {
       const response = await fetch(
-        "http://myfitguide.runasp.net/api/WorkOut/ShowAllWorkOutPlans",
+        "https://myfirtguide.runasp.net/api/WorkOut/ShowAllWorkOutPlans",
         { headers }
       );
       if (response.ok) {
@@ -241,7 +241,7 @@ export default function Workouts() {
       "Content-Type": "application/json",
     };
 
-    const apiUrl = `http://myfitguide.runasp.net/api/WorkOut/updateWorkOut?planType=${encodeURIComponent(
+    const apiUrl = `https://myfirtguide.runasp.net/api/WorkOut/updateWorkOut?planType=${encodeURIComponent(
       selectedPlanType
     )}`;
 

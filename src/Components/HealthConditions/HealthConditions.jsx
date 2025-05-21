@@ -16,7 +16,7 @@ export default function HealthConditions() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://myfitguide.runasp.net/api/Injury/GetAllInjuries")
+    fetch("https://myfirtguide.runasp.net/api/Injury/GetAllInjuries")
       .then((res) => res.json())
       .then((data) =>
         setInjuries(
@@ -25,7 +25,7 @@ export default function HealthConditions() {
       )
       .catch((err) => console.error("Failed to load injuries:", err));
 
-    fetch("http://myfitguide.runasp.net/api/Allergy/Show All Allergies")
+    fetch("https://myfirtguide.runasp.net/api/Allergy/Show All Allergies")
       .then((res) => res.json())
       .then((data) =>
         setAllergies(
@@ -65,7 +65,7 @@ export default function HealthConditions() {
     try {
       for (const injuryId of userInjuries) {
         const url = new URL(
-          "http://myfitguide.runasp.net/api/Injury/AddInjury"
+          "https://myfirtguide.runasp.net/api/Injury/AddInjury"
         );
         url.searchParams.append("id", injuryId);
 
@@ -90,7 +90,7 @@ export default function HealthConditions() {
 
       for (const allergyId of userAllergies) {
         const url = new URL(
-          "http://myfitguide.runasp.net/api/Allergy/AddAllergy"
+          "https://myfirtguide.runasp.net/api/Allergy/AddAllergy"
         );
         url.searchParams.append("id", allergyId);
 

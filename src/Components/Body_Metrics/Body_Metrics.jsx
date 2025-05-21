@@ -26,7 +26,7 @@ export default function Body_Metrics() {
     const fetchGoals = async () => {
       try {
         const res = await fetch(
-          "http://myfitguide.runasp.net/api/Goal/GetAllGoals"
+          "https://myfirtguide.runasp.net/api/Goal/GetAllGoals"
         );
         if (!res.ok) throw new Error("Failed to fetch goals");
         const data = await res.json();
@@ -67,7 +67,7 @@ export default function Body_Metrics() {
       });
 
       const resMetrics = await fetch(
-        `http://myfitguide.runasp.net/api/UserMetrics/EnterMetrics?${queryParams.toString()}`,
+        `https://myfirtguide.runasp.net/api/UserMetrics/EnterMetrics?${queryParams.toString()}`,
         {
           method: "POST",
           headers: {
@@ -81,7 +81,7 @@ export default function Body_Metrics() {
       if (!resMetrics.ok) throw new Error(await resMetrics.text());
 
       const urlGoal = new URL(
-        "http://myfitguide.runasp.net/api/Goal/SelectGoal"
+        "https://myfirtguide.runasp.net/api/Goal/SelectGoal"
       );
       urlGoal.searchParams.append("GoalName", formData.goal);
 

@@ -32,7 +32,6 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser, logout }}>
       {" "}
-      {/* Add logout to value */}
       {children}
     </UserContext.Provider>
   );
