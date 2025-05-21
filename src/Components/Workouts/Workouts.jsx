@@ -122,7 +122,6 @@ export default function Workouts() {
     }
   };
 
-  // NEW FUNCTION: Handle "Try it" button click for AI tracking
   const handleTryIt = async (exerciseId) => {
     if (!currentUser || !currentUser.token) {
       alert("Please log in to try this workout.");
@@ -130,24 +129,13 @@ export default function Workouts() {
     }
 
     try {
-      // Request access to the user's camera
-      // The 'video: true' constraint requests access to video input
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-      // If successful, you've gained access to the camera.
-      // You can then navigate to a new page where the AI model will be used.
       console.log("Camera access granted for exercise:", exerciseId);
       alert("Camera access granted! Redirecting to AI tracking page...");
-      // IMPORTANT: Replace '/ai-tracking' with the actual path to your AI tracking page
-      // You might also want to pass the exerciseId to the tracking page
-      navigate(`/ai-tracking/${exerciseId}`);
 
-      // You might want to stop the stream if you don't immediately use it
-      // in this component, to avoid keeping the camera on unnecessarily.
-      // However, if you navigate immediately, the new page will handle the stream.
-      // stream.getTracks().forEach(track => track.stop());
+      navigate(`/ai-tracking/${exerciseId}`);
     } catch (err) {
-      // Handle cases where camera access is denied or not available
       if (err.name === "NotAllowedError") {
         alert(
           "Camera access denied. Please allow camera access in your browser settings to use this feature."
