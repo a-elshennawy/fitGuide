@@ -287,15 +287,22 @@ export default function Body_Metrics() {
               </div>
               <div className="inputContainer col-lg-5 col-10">
                 <label htmlFor="GymFrequency">gym frequency</label>
-                <input
+                <select
                   required
-                  type="text"
-                  placeholder="0.0"
-                  id="GymFrequency"
+                  className="col-12"
                   name="GymFrequency"
+                  id="GymFrequency"
                   value={formData.GymFrequency}
                   onChange={handleChange}
-                />
+                >
+                  <option value="" disabled>
+                    select your frequency
+                  </option>
+                  <option value="OneToTwo">1 - 2 days</option>
+                  <option value="ThreeToFour">3 - 4 days</option>
+                  <option value="FiveToSix">5 - 6 days</option>
+                  <option value="Everyday">Everyday</option>
+                </select>
               </div>
               <label htmlFor="level">your gym experience ?</label>
               <select
