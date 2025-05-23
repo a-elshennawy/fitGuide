@@ -20,6 +20,7 @@ export default function Workouts() {
   const [isUpdatingPlan, setIsUpdatingPlan] = useState(false);
   const [updatePlanError, setUpdatePlanError] = useState("");
   const [updatePlanSuccess, setUpdatePlanSuccess] = useState("");
+  const [workoutPlan, setWorkoutPlan] = useState(null);
 
   const fetchWorkouts = async () => {
     if (!currentUser || !currentUser.token) {
@@ -44,24 +45,24 @@ export default function Workouts() {
         const data = await response.json();
         console.log("API Response from GetMyWorkOutPlan:", data);
 
-        if (
-          data &&
-          Array.isArray(data) &&
-          data.length > 0 &&
-          Array.isArray(data[0].exercises)
-        ) {
-          setExercises(
-            data[0].exercises.slice(0, 3).map((ex, index) => ({
-              ...ex,
-              exerciseId: ex.exerciseId || index + 1,
-            }))
-          );
+        if (data && Array.isArray(data) && data.length > 0) {
+          setWorkoutPlan(data[0].workOutPlan);
+          if (Array.isArray(data[0].exercises)) {
+            setExercises(
+              data[0].exercises.slice(0, 3).map((ex, index) => ({
+                ...ex,
+                exerciseId: ex.exerciseId || index + 1,
+              }))
+            );
+          } else {
+            setExercises([]);
+          }
         } else {
           setExercises([]);
+          setWorkoutPlan(null);
         }
       } else {
         console.error("Failed to fetch workouts:", response.status);
-        setExercises([]);
       }
     } catch (err) {
       console.error("Error fetching workouts:", err);
@@ -272,70 +273,71 @@ export default function Workouts() {
 
   return (
     <>
-      {" "}
       <Helmet>
-        <title>FitGuide - Workouts</title>{" "}
-      </Helmet>{" "}
+        <title>FitGuide - Workouts</title>
+      </Helmet>
       <div className="workouts">
-        {" "}
         <div className="container-fluid">
-          {" "}
           <div className="workoutsInner row">
-            {" "}
+            {workoutPlan && (
+              <div className="workout-plan-header col-lg-10 col-12">
+                <h2>{workoutPlan.name}</h2>
+                {workoutPlan.alert && (
+                  <div className="alert alert-warning theAlert">
+                    <strong>note:</strong> {workoutPlan.alert}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="workoutItems col-lg-10 col-12 row">
-              {" "}
               {exercises.map((exercise) => (
                 <div
                   key={exercise.exerciseId}
                   className="workout fromBottom row col-lg-8 col-12"
                 >
-                  {" "}
                   <div className="img col-lg-1 col-5">
-                    {" "}
-                    <img src="imgs/icons8-arm-50.png" alt="Arm icon" />{" "}
-                  </div>{" "}
+                    <img src="imgs/icons8-arm-50.png" alt="Arm icon" />
+                  </div>
                   <div className="details col-lg-9 col-5">
-                    <h4>{exercise.name}</h4>{" "}
+                    <h4>{exercise.name}</h4>
                     <p>
-                      {" "}
                       {exercise.description ||
-                        `targets ${exercise.targetMuscle}`}{" "}
-                    </p>{" "}
-                  </div>{" "}
+                        `targets ${exercise.targetMuscle}`}
+                    </p>
+                    <small className="text-muted">
+                      Max weight: {exercise.maximumWeight} kg
+                    </small>
+                  </div>
                   <div className="reps col-lg-2 col-12">
-                    {" "}
                     <h4>
-                      {exercise.numberOfSets} x {exercise.numberOfReps}{" "}
-                    </h4>{" "}
-                  </div>{" "}
+                      {exercise.numberOfSets} x {exercise.numberOfReps}
+                    </h4>
+                  </div>
                   <div className="btns row col-12">
-                    {" "}
-                    {/* MODIFIED: Added onClick handler for "Try it" button */}{" "}
                     <button
                       className="tryBtn col-5"
                       onClick={() => handleTryIt(exercise.exerciseId)}
                     >
                       try it
-                    </button>{" "}
+                    </button>
                     <button
                       className="watch col-5"
                       onClick={() => handleWatchTutorial(exercise.exerciseId)}
                     >
-                      watch{" "}
-                    </button>{" "}
-                  </div>{" "}
+                      watch
+                    </button>
+                  </div>
                 </div>
-              ))}{" "}
+              ))}
               <div className="btns fromLeft col-lg-10 col-12">
-                {" "}
                 <button className="switch" onClick={handleOpenSwitchPlanModal}>
-                  🔄 Switch Plan{" "}
-                </button>{" "}
-              </div>{" "}
-            </div>{" "}
-          </div>{" "}
-        </div>{" "}
-      </div>{" "}
+                  🔄 Switch Plan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       {showSwitchPlanModal && (
         <div
           className="modal"
@@ -345,83 +347,73 @@ export default function Workouts() {
             overflowY: "auto",
           }}
         >
-          {" "}
           <div className="modal-dialog modal-dialog-centered">
-            {" "}
             <div className="modal-content">
-              {" "}
               <div className="modal-header">
-                {" "}
-                <h5 className="modal-title">Switch Workout Plan</h5>{" "}
+                <h5 className="modal-title">Switch Workout Plan</h5>
                 <button
                   type="button"
                   className="btn-close"
                   onClick={handleCloseSwitchPlanModal}
-                ></button>{" "}
-              </div>{" "}
+                ></button>
+              </div>
               <div className="modal-body">
-                {" "}
                 {updatePlanError && (
                   <div className="alert alert-danger">{updatePlanError}</div>
-                )}{" "}
+                )}
                 {updatePlanSuccess && (
                   <div className="alert alert-success">{updatePlanSuccess}</div>
-                )}{" "}
+                )}
                 {loadingPlans ? (
                   <LoadingSpinner />
                 ) : plansError ? (
                   <div className="alert alert-danger">{plansError}</div>
                 ) : (
                   <div className="mb-3">
-                    {" "}
                     <label htmlFor="planSelect" className="form-label">
-                      Select a new workout plan:{" "}
-                    </label>{" "}
+                      Select a new workout plan:
+                    </label>
                     <select
                       id="planSelect"
                       className="form-select"
                       value={selectedPlanType}
                       onChange={(e) => setSelectedPlanType(e.target.value)}
                     >
-                      {" "}
-                      <option value="">-- Please select --</option>{" "}
+                      <option value="">-- Please select --</option>
                       {availablePlans.map((plan, index) => (
                         <option
                           key={plan.planType || plan.name || index}
                           value={plan.planType || plan.name || plan}
                         >
-                          {" "}
-                          {plan.name || plan.planType || plan}{" "}
+                          {plan.name || plan.planType || plan}
                         </option>
-                      ))}{" "}
-                    </select>{" "}
+                      ))}
+                    </select>
                   </div>
-                )}{" "}
-              </div>{" "}
+                )}
+              </div>
               <div className="modal-footer">
-                {" "}
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={handleCloseSwitchPlanModal}
                 >
-                  Cancel{" "}
-                </button>{" "}
+                  Cancel
+                </button>
                 <button
                   type="button"
                   className="btn btn-success"
                   onClick={handleUpdateWorkoutPlan}
                   disabled={isUpdatingPlan || !selectedPlanType}
                 >
-                  {" "}
-                  {isUpdatingPlan ? "Switching..." : "Switch Plan"}{" "}
-                </button>{" "}
-              </div>{" "}
-            </div>{" "}
-          </div>{" "}
+                  {isUpdatingPlan ? "Switching..." : "Switch Plan"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-      <UpBtn />{" "}
+      <UpBtn />
     </>
   );
 }

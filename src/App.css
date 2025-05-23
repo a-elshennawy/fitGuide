@@ -1145,6 +1145,13 @@ body {
     align-items: center;
     gap: 10px;
 
+    .workout-plan-header {
+      .theAlert {
+        padding: 10px;
+        margin: 0;
+      }
+    }
+
     .workoutItems {
       padding: 20px 10px;
       height: 80dvh;
@@ -1232,7 +1239,7 @@ body {
       justify-content: center;
       align-items: center;
       background-color: #fff;
-      padding: 20px;
+      padding: 10px;
       border-radius: 10px;
       h3 {
         padding: 10px 0px;
@@ -1287,6 +1294,9 @@ body {
 
       .tracs {
         padding: 20px 0px;
+        justify-content: space-between;
+        align-items: center;
+
         .protein {
           text-align: center;
           p {

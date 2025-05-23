@@ -210,7 +210,7 @@ export default function DailySummary() {
               </div>
 
               <div className="tracs row col-lg-10 col-12">
-                <div className="protein col-4">
+                <div className="protein col-3">
                   <p>protein</p>
                   <h4>
                     <span>
@@ -225,7 +225,7 @@ export default function DailySummary() {
                     ></div>
                   </div>
                 </div>
-                <div className="carbs col-4">
+                <div className="carbs col-3">
                   <p>carbs</p>
                   <h4>
                     <span>
@@ -240,7 +240,7 @@ export default function DailySummary() {
                     ></div>
                   </div>
                 </div>
-                <div className="fats col-4">
+                <div className="fats col-3">
                   <p>fats</p>
                   <h4>
                     <span>
