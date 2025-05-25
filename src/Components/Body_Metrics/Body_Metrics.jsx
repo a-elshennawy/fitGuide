@@ -1,47 +1,36 @@
 import { Link } from "react-router-dom";
-
 import { useEffect, useState, useContext } from "react";
-
 import { Helmet } from "react-helmet";
-
 import { useNavigate } from "react-router-dom";
 
+// import user context to share all data across App
 import { UserContext } from "../Contexts/UserContext";
 
 export default function Body_Metrics() {
   const { currentUser } = useContext(UserContext);
-
   const navigate = useNavigate();
-
   const [goals, setGoals] = useState([]);
-
   const [workoutPlans, setWorkoutPlans] = useState([]);
-
   const [error, setError] = useState("");
 
+  // getting data from the form
   const [formData, setFormData] = useState({
     weight: "",
-
     height: "",
-
     fats: "",
-
     waterMass: "",
-
     level: "",
-
     goal: "",
-
     MuscleMass: "",
-
     GymFrequency: "",
-
     workoutPlan: "",
   });
 
   useEffect(() => {
+    // log to assure data are assign to user context
     console.log("Body_Metrics: Current User:", currentUser);
 
+    // using /api/Goal/GetAllGoals to get all goals for user to choose from
     const fetchGoals = async () => {
       try {
         const res = await fetch(
@@ -49,20 +38,18 @@ export default function Body_Metrics() {
         );
 
         if (!res.ok) throw new Error("Failed to fetch goals");
-
         const data = await res.json();
 
         setGoals(data);
-
         setError("");
       } catch (err) {
         setError("Failed to load goals. Please try again later.");
-
         console.error("Body_Metrics: Fetch goals error:", err);
       }
     };
 
     const fetchWorkoutPlans = async () => {
+      // in case no user registered
       if (!currentUser?.token) {
         console.warn(
           "Body_Metrics: No token found for fetching workout plans."
@@ -70,18 +57,20 @@ export default function Body_Metrics() {
 
         return;
       }
-
+      // using /api/WorkOut/ShowAllWorkOutPlans to get workout plans for user to choose
       try {
         const res = await fetch(
           "https://myfirtguide.runasp.net/api/WorkOut/ShowAllWorkOutPlans",
 
           {
             headers: {
+              // user token from the context
               Authorization: `Bearer ${currentUser.token}`,
             },
           }
         );
 
+        // in case end point failed
         if (!res.ok) {
           const errorText = await res.text();
 
@@ -92,6 +81,7 @@ export default function Body_Metrics() {
 
         const data = await res.json();
 
+        // assign workout plan
         setWorkoutPlans(data);
       } catch (err) {
         console.error("Body_Metrics: Fetch workout plans error:", err);
@@ -100,8 +90,8 @@ export default function Body_Metrics() {
       }
     };
 
+    // call fetchs
     fetchGoals();
-
     fetchWorkoutPlans();
   }, [currentUser]);
 
@@ -115,36 +105,35 @@ export default function Body_Metrics() {
     }));
   };
 
+  // moving to next page
   const handleContinue = async () => {
+    // in case no user registered
     if (!currentUser?.token) {
       setError("Please sign up first.");
 
       return;
     }
 
+    // in case user skipped workout plan select
     if (!formData.workoutPlan) {
       setError("Please select a workout plan before continuing.");
 
       return;
     }
 
+    // declair the params from the form
     try {
       const queryParams = new URLSearchParams({
         Weight: formData.weight,
-
         Height: formData.height,
-
         fitnessLevel: formData.level,
-
         Fat: formData.fats || 0,
-
         WaterMass: formData.waterMass || 0,
-
         MuscleMass: formData.MuscleMass || 0,
-
         GymFrequency: formData.GymFrequency || 0,
       });
 
+      // using /api/UserMetrics/EnterMetrics to assign metrics to user using token
       const resMetrics = await fetch(
         `https://myfirtguide.runasp.net/api/UserMetrics/EnterMetrics?${queryParams.toString()}`,
 
@@ -153,26 +142,25 @@ export default function Body_Metrics() {
 
           headers: {
             "Content-Type": "application/json",
-
             Authorization: `Bearer ${currentUser.token}`,
-
             Accept: "application/json",
           },
         }
       );
 
+      // in case end point failed
       if (!resMetrics.ok) {
         const errorText = await resMetrics.text();
 
         throw new Error(`Failed to save metrics: ${errorText}`);
       }
 
+      // using /api/Goal/SelectGoal to assign goal
       const urlGoal = new URL(
         "https://myfirtguide.runasp.net/api/Goal/SelectGoal"
       );
 
       urlGoal.searchParams.append("GoalName", formData.goal);
-
       const resGoal = await fetch(urlGoal.toString(), {
         method: "POST",
 
@@ -181,6 +169,7 @@ export default function Body_Metrics() {
         },
       });
 
+      // in case end point failed
       if (!resGoal.ok) {
         const errorText = await resGoal.text();
 
@@ -189,18 +178,18 @@ export default function Body_Metrics() {
         );
       }
 
+      // moving to next page with state of current workout plan
       navigate("/healthconditions", {
         state: { workoutPlanName: formData.workoutPlan },
       });
 
+      // assure what's passed to next page
       console.log(
         "Body_Metrics: Navigating to /healthconditions with workoutPlanName:",
-
         formData.workoutPlan
       );
     } catch (err) {
       setError(err.message || "Failed to save metrics or select goal.");
-
       console.error("Body_Metrics: Metrics/Goal error:", err);
     }
   };

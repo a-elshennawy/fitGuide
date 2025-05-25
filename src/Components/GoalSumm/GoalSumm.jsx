@@ -1,65 +1,46 @@
 import { useEffect, useState, useContext } from "react";
-
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
 import { Helmet } from "react-helmet";
-
-import { UserContext } from "../Contexts/UserContext";
-
 import LoadingSpinner from "../../Components/loadingSpinner";
+
+// import context to assure sharing across app
+import { UserContext } from "../Contexts/UserContext";
 
 export default function GoalSumm() {
   const { currentUser } = useContext(UserContext);
-
   const navigate = useNavigate();
-
   const location = useLocation();
-
   const [currentMetrics, setCurrentMetrics] = useState(null);
-
   const [userGoal, setUserGoal] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
-
   const [selectedWorkoutPlanName, setSelectedWorkoutPlanName] = useState(null);
-
   const [displayedInjuries, setDisplayedInjuries] = useState([]);
-
   const [displayedAllergies, setDisplayedAllergies] = useState([]);
-
   const [weightChange, setWeightChange] = useState(0);
-
   const [bmiChange, setBmiChange] = useState(0);
-
   const [muscleMassChange, setMuscleMassChange] = useState(0);
-
   const [fatChange, setFatChange] = useState(0);
-
   const [isWeightNegative, setIsWeightNegative] = useState(false);
-
   const [isBmiNegative, setIsBmiNegative] = useState(false);
-
   const [isMuscleMassPositive, setIsMuscleMassPositive] = useState(false);
-
   const [isFatNegative, setIsFatNegative] = useState(false);
 
   useEffect(() => {
     const fetchMetricsAndGoal = async () => {
       setLoading(true);
-
       setError("");
 
+      // no user
       try {
         if (!currentUser?.token) {
           throw new Error("User token not available. Please log in.");
         }
-
         const headers = {
           Authorization: `Bearer ${currentUser.token}`,
         };
 
+        // /api/UserMetrics/GetAllUserMetrices to view stored metrics
         const [metricsRes, goalRes] = await Promise.all([
           fetch(
             "https://myfirtguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
@@ -67,11 +48,13 @@ export default function GoalSumm() {
             { headers }
           ),
 
+          // /api/Goal/GetUserGoal to view stored goal
           fetch("https://myfirtguide.runasp.net/api/Goal/GetUserGoal", {
             headers,
           }),
         ]);
 
+        // if no user metrics
         if (!metricsRes.ok) {
           const errorText = await metricsRes.text();
 
@@ -80,6 +63,7 @@ export default function GoalSumm() {
           );
         }
 
+        // if no user goal
         if (!goalRes.ok) {
           const errorText = await goalRes.text();
 
@@ -89,9 +73,9 @@ export default function GoalSumm() {
         }
 
         const metricsData = await metricsRes.json();
-
         const goalData = await goalRes.json();
 
+        // assure metrics exists
         if (
           metricsData &&
           metricsData.length > 0 &&
@@ -105,6 +89,7 @@ export default function GoalSumm() {
           throw new Error("No user metrics found");
         }
 
+        // assure goal exists
         if (goalData.userGoal) {
           setUserGoal(goalData.userGoal);
         } else {
@@ -119,21 +104,21 @@ export default function GoalSumm() {
       }
     };
 
+    // assure user token
     if (currentUser?.token) {
       fetchMetricsAndGoal();
     } else {
       setLoading(false);
-
       setError("Please log in to view your summary.");
     }
 
+    // assure what's passed
     if (location.state) {
       if (location.state.workoutPlanName) {
         setSelectedWorkoutPlanName(location.state.workoutPlanName);
 
         console.log(
           "GoalSumm: Received workoutPlanName from HealthConditions:",
-
           location.state.workoutPlanName
         );
       }
@@ -143,14 +128,12 @@ export default function GoalSumm() {
 
         console.log(
           "GoalSumm: Received userInjuries:",
-
           location.state.userInjuries
         );
       }
 
       if (location.state.userAllergies) {
         setDisplayedAllergies(location.state.userAllergies);
-
         console.log(
           "GoalSumm: Received userAllergies:",
 
@@ -169,30 +152,27 @@ export default function GoalSumm() {
       const weightDiff = userGoal.targetWeight - currentMetrics.weight;
 
       setWeightChange(Math.abs(weightDiff).toFixed(2));
-
       setIsWeightNegative(weightDiff < 0);
 
       const bmiDiff = userGoal.targetBMI - currentMetrics.currentBBMI;
 
       setBmiChange(Math.abs(bmiDiff).toFixed(1));
-
       setIsBmiNegative(bmiDiff < 0);
 
       const muscleMassDiff =
         userGoal.targetMuscleMass - currentMetrics.muscleMass;
 
       setMuscleMassChange(Math.abs(muscleMassDiff).toFixed(1));
-
       setIsMuscleMassPositive(muscleMassDiff > 0);
 
       const fatDiff = userGoal.targetFat - currentMetrics.fat;
 
       setFatChange(Math.abs(fatDiff).toFixed(1));
-
       setIsFatNegative(fatDiff < 0);
     }
   }, [currentMetrics, userGoal]);
 
+  // if no user token found
   const handleStartJourney = async () => {
     if (!currentUser?.token) {
       setError("You are not logged in. Please sign in to start your journey.");
@@ -209,13 +189,12 @@ export default function GoalSumm() {
     }
 
     setLoading(true);
-
     setError("");
 
+    // generate needed at start
     try {
       const headers = {
         Authorization: `Bearer ${currentUser.token}`,
-
         "Content-Type": "application/json",
       };
 
@@ -249,13 +228,11 @@ export default function GoalSumm() {
 
       console.log(
         "GoalSumm: Attempting to generate workout plan with URL:",
-
         workoutUrl.toString()
       );
 
       const workoutPlanRes = await fetch(workoutUrl.toString(), {
         method: "POST",
-
         headers,
       });
 
@@ -267,15 +244,14 @@ export default function GoalSumm() {
         );
       }
 
+      // all done .. sign in
       console.log("GoalSumm: Workout plan generated successfully");
-
       navigate("/SignIn");
     } catch (err) {
       setError(err.message);
 
       console.error("GoalSumm: Error generating plans:", {
         message: err.message,
-
         stack: err.stack,
       });
     } finally {

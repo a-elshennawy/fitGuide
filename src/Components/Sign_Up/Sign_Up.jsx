@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+
+// import user context to share all data across App
 import { UserContext } from "../Contexts/UserContext";
 
 export default function Sign_Up() {
@@ -10,7 +12,8 @@ export default function Sign_Up() {
   const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
   const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
+
+  // grab data from the sign up form
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,6 +28,7 @@ export default function Sign_Up() {
   const [error, setError] = useState("");
   const { setCurrentUser } = useContext(UserContext);
 
+  // live validation for email
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -33,6 +37,7 @@ export default function Sign_Up() {
     }));
   };
 
+  // using /api/Account/emailExist to avoid existing email
   const checkEmailExists = async (email) => {
     if (!email) return false;
 
@@ -52,6 +57,7 @@ export default function Sign_Up() {
         }
       );
 
+      // in case end point failed
       if (!response.ok) {
         throw new Error("Failed to check email");
       }
@@ -77,6 +83,7 @@ export default function Sign_Up() {
     }
   };
 
+  // form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading || emailChecking) return;
@@ -91,9 +98,11 @@ export default function Sign_Up() {
     setError("");
 
     try {
+      // get first & las name frm full name
       const firstName = formData.name.split(" ")[0] || formData.name;
       const lastName = formData.name.split(" ")[1] || "";
 
+      // declair params from form data
       const queryParams = new URLSearchParams({
         Email: formData.email,
         FirstName: firstName,
@@ -101,11 +110,13 @@ export default function Sign_Up() {
         FullName: formData.name,
         Gender: formData.gender,
         PhoneNumber: formData.phone,
+        // to assure valid age
         Age: parseInt(formData.age),
         Country: formData.country,
         Password: formData.passWord,
       });
 
+      // send to end point /api/Account/Register
       const response = await fetch(
         `https://myfirtguide.runasp.net/api/Account/Register?${queryParams.toString()}`,
         {
@@ -117,13 +128,18 @@ export default function Sign_Up() {
         }
       );
 
+      // in case end point failed
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData?.message || "Failed to register.");
       }
 
       const data = await response.json();
+
+      // log the token
       console.log("Token received:", data.token);
+
+      // assign data to context
       setCurrentUser(data);
       navigate("/bodymetrics");
     } catch (err) {
@@ -134,6 +150,7 @@ export default function Sign_Up() {
     }
   };
 
+  // get countries
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
       .then((res) => res.json())

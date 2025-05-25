@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+
+// get the user to assure sign in authenticated
 import { UserContext } from "../Contexts/UserContext";
 
 export default function Sign_In() {
@@ -14,6 +16,7 @@ export default function Sign_In() {
     e.preventDefault();
     setError("");
 
+    // /api/Account/LogIn?EmailAddress to log in auth
     try {
       const response = await fetch(
         `https://myfirtguide.runasp.net/api/Account/LogIn?EmailAddress=${encodeURIComponent(
@@ -41,6 +44,8 @@ export default function Sign_In() {
       }
 
       console.log("Login success:", data);
+
+      // assign current user
       setCurrentUser(data);
       navigate("/");
     } catch (err) {

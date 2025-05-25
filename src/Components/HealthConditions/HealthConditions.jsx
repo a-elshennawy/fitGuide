@@ -1,67 +1,61 @@
 import { useEffect, useState, useContext } from "react";
-
 import { Helmet } from "react-helmet";
-
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+// import user context to assure sharing across app
 import { UserContext } from "../Contexts/UserContext";
 
 export default function HealthConditions() {
   const { currentUser } = useContext(UserContext);
-
   const navigate = useNavigate();
-
   const location = useLocation();
-
   const [injuries, setInjuries] = useState([]);
-
   const [allergies, setAllergies] = useState([]);
-
   const [selectedInjuryId, setSelectedInjuryId] = useState("");
-
   const [selectedAllergyId, setSelectedAllergyId] = useState("");
-
   const [userInjuries, setUserInjuries] = useState([]);
-
   const [userAllergies, setUserAllergies] = useState([]);
-
   const [error, setError] = useState("");
 
+  // getting the workout plan from prev page
   const [workoutPlanNameFromPrev, setWorkoutPlanNameFromPrev] = useState(null);
 
+  // using /api/Injury/GetAllInjuries to get injuries for user to choose to choose from
   useEffect(() => {
     fetch("https://myfirtguide.runasp.net/api/Injury/GetAllInjuries")
       .then((res) => res.json())
-
       .then((data) =>
         setInjuries(
           data.map((injury, index) => ({ id: index + 1, name: injury }))
         )
       )
 
+      // in case end point failed
       .catch((err) =>
         console.error("HealthConditions: Failed to load injuries:", err)
       );
 
+    // using /api/Allergy/Show All Allergies to get allergies for user to choose from
     fetch("https://myfirtguide.runasp.net/api/Allergy/Show All Allergies")
       .then((res) => res.json())
-
       .then((data) =>
         setAllergies(
           data.map((allergy, index) => ({ id: index + 1, name: allergy }))
         )
       )
 
+      // in case end point failed
       .catch((err) =>
         console.error("HealthConditions: Failed to load allergies:", err)
       );
 
+    // assign wrokout plan from prev. state
     if (location.state && location.state.workoutPlanName) {
       setWorkoutPlanNameFromPrev(location.state.workoutPlanName);
 
+      // assure what's recevied
       console.log(
         "HealthConditions: Received workoutPlanName from Body_Metrics:",
-
         location.state.workoutPlanName
       );
     } else {
@@ -75,13 +69,13 @@ export default function HealthConditions() {
     }
   }, [location.state]);
 
+  // assign injuries & allergies
   const handleAddInjury = () => {
     if (selectedInjuryId === "None") {
       setUserInjuries([]);
     } else if (selectedInjuryId && !userInjuries.includes(selectedInjuryId)) {
       setUserInjuries((prev) => [...prev, selectedInjuryId]);
     }
-
     setSelectedInjuryId("");
   };
 
@@ -94,17 +88,17 @@ export default function HealthConditions() {
     ) {
       setUserAllergies((prev) => [...prev, selectedAllergyId]);
     }
-
     setSelectedAllergyId("");
   };
 
+  // going next page
   const handleContinue = async () => {
+    // in case no user registered
     if (!currentUser?.token) {
       setError("Please sign up first.");
-
       return;
     }
-
+    // in case no workouit plan select / passed
     if (!workoutPlanNameFromPrev) {
       setError(
         "Cannot proceed: Workout plan information is missing from the previous step."
@@ -113,25 +107,24 @@ export default function HealthConditions() {
       return;
     }
 
+    // using /api/Injury/AddInjury to assign injury to current user via token
     try {
       for (const injuryId of userInjuries) {
         if (injuryId === "None") continue;
-
         const url = new URL(
           "https://myfirtguide.runasp.net/api/Injury/AddInjury"
         );
 
         url.searchParams.append("id", injuryId);
-
         const resInjury = await fetch(url.toString(), {
           method: "POST",
-
           headers: { Authorization: `Bearer ${currentUser.token}` },
         });
 
+        //  in case end point issue
         if (!resInjury.ok) {
           const errorText = await resInjury.text();
-
+          // already added
           if (errorText.includes("already added")) {
             console.warn(
               `HealthConditions: Injury already added (ignoring): ${injuryId}`
@@ -140,7 +133,7 @@ export default function HealthConditions() {
             const injuryObject = injuries.find(
               (i) => i.id === parseInt(injuryId)
             );
-
+            // failed & getting error
             throw new Error(
               `Failed to add injury: ${
                 injuryObject?.name || injuryId
@@ -150,24 +143,22 @@ export default function HealthConditions() {
         }
       }
 
+      // using /api/Allergy/AddAllergy to assign allergy to current user via token
       for (const allergyId of userAllergies) {
         if (allergyId === "None") continue;
-
         const url = new URL(
           "https://myfirtguide.runasp.net/api/Allergy/AddAllergy"
         );
 
         url.searchParams.append("id", allergyId);
-
         const resAllergy = await fetch(url.toString(), {
           method: "POST",
-
           headers: { Authorization: `Bearer ${currentUser.token}` },
         });
 
+        //  in case end point issue
         if (!resAllergy.ok) {
           const errorText = await resAllergy.text();
-
           if (errorText.includes("already added")) {
             console.warn(
               `HealthConditions: Allergy already added (ignoring): ${allergyId}`
@@ -177,6 +168,7 @@ export default function HealthConditions() {
               (a) => a.id === parseInt(allergyId)
             );
 
+            // failed & getting error
             throw new Error(
               `Failed to add allergy: ${
                 allergyObject?.name || allergyId
@@ -186,48 +178,41 @@ export default function HealthConditions() {
         }
       }
 
+      // passing injuries & allergies
       const injuryNamesToPass = userInjuries
-
         .map((id) => injuries.find((i) => i.id === parseInt(id))?.name)
-
         .filter(Boolean);
 
       const allergyNamesToPass = userAllergies
-
         .map((id) => allergies.find((a) => a.id === parseInt(id))?.name)
-
         .filter(Boolean);
 
+      // to next page with (workoutplan + injuries + allergies)
       navigate("/GoalSumm", {
         state: {
           workoutPlanName: workoutPlanNameFromPrev,
-
           userInjuries: injuryNamesToPass,
-
           userAllergies: allergyNamesToPass,
         },
 
         replace: true,
       });
 
+      // assure what's passed
       console.log(
         "HealthConditions: Navigating to /GoalSumm with workoutPlanName:",
-
         workoutPlanNameFromPrev
       );
-
       console.log("HealthConditions: Passing userInjuries:", injuryNamesToPass);
-
       console.log(
         "HealthConditions: Passing userAllergies:",
-
         allergyNamesToPass
       );
 
       setError("");
+      // in case pass failed
     } catch (err) {
       setError(err.message || "Failed to save health conditions.");
-
       console.error("Health conditions error:", err);
     }
   };
