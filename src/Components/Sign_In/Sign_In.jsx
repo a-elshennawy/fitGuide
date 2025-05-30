@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 
 // get the user to assure sign in authenticated
 import { UserContext } from "../Contexts/UserContext";
@@ -109,8 +110,8 @@ export default function Sign_In() {
                 <input type="checkbox" /> Remember Me
               </label>
 
-              <button className="passwordReset col-6" type="button">
-                <a href="#">forgot password ?</a>
+              <button className="toReg col-6" type="button">
+                <Link to={"/signUp"}>don't have an account ?</Link>
               </button>
 
               <button className="sigInBtn col-12" type="submit">

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push-up Trainer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Push-up Trainer</h1>
+        <div class="video-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output"></canvas>
+            <div id="detection-warning" class="overlay hidden">Detection lost! Please adjust position.</div>
+            <div id="counter-container" class="counter-container hidden">
+                <div id="rep-counter" class="counter">Total: 0</div>
+                <div id="correct-counter" class="counter correct">Good: 0</div>
+                <div id="incorrect-counter" class="counter incorrect">Bad: 0</div>
+            </div>
+            <div id="feedback" class="overlay feedback-area hidden"></div>
+            <button id="exitFullscreenBtn" class="exit-fullscreen-btn hidden"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="controls">
+            <button id="backBtn" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <button id="startBtn"><i class="fas fa-play"></i> Start Camera</button>
+        </div>
+        <div class="instructions">
+            <h2>How to Use</h2>
+            <ol>
+                <li>Click "Start Camera" to begin.</li>
+                <li>Position yourself in a plank position.</li>
+                <li>Keep your back straight during push-ups.</li>
+                <li>Lower your body until your elbows are at 90 degrees.</li>
+                <li>The AI will count reps and provide form feedback.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Session Complete Screen -->
+    <div id="sessionComplete" class="session-complete hidden">
+        <div class="session-complete-content">
+            <h2>Session Complete!</h2>
+            <div class="stats-container">
+                <div class="stat-row">
+                    <span class="stat-label">Total Reps:</span>
+                    <span id="totalReps" class="stat-value">0</span>
+                </div>
+                <div class="stat-row good">
+                    <span class="stat-label">Good Form:</span>
+                    <span id="goodReps" class="stat-value">0</span>
+                </div>
+                <div class="stat-row needs-improvement">
+                    <span class="stat-label">Need Improvement:</span>
+                    <span id="badReps" class="stat-value">0</span>
+                </div>
+            </div>
+            <div class="form-issues">
+                <h3>Form Issues</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Elbow Angle:</span>
+                    <span id="elbowAngle" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Back Not Straight:</span>
+                    <span id="backNotStraight" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Body Alignment:</span>
+                    <span id="bodyAlignment" class="stat-value">0</span>
+                </div>
+            </div>
+            <div class="performance-score">
+                <span class="stat-label">Performance Score:</span>
+                <span id="performanceScore" class="stat-value">0%</span>
+            </div>
+            <button id="nextBtn" class="next-btn">Next</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

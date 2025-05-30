@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
@@ -18,6 +19,9 @@ const HealthConditions = lazy(() =>
 const GoalSumm = lazy(() => import("./Components/GoalSumm/GoalSumm"));
 const WorkoutFeedBack = lazy(() =>
   import("./Components/WorkoutFeedBack/WorkoutFeedBack")
+);
+const WorkoutNOtAvailabeYet = lazy(() =>
+  import("./Components/WorkoutNOtAvailabeYet/WorkoutNOtAvailabeYet")
 );
 
 const createRoute = (path, element) => ({
@@ -43,7 +47,19 @@ function App() {
     createRoute("/bodymetrics", <Body_Metrics />),
     createRoute("/healthconditions", <HealthConditions />),
     createRoute("/GoalSumm", <GoalSumm />),
+    createRoute("/WorkoutNotAvailableYet", <WorkoutNOtAvailabeYet />),
   ]);
+
+  useEffect(() => {
+    if (window.setupRouterBridge) {
+      window.setupRouterBridge({
+        navigate: (path, options) => {
+          window.location.href = path;
+        },
+      });
+    }
+  }, []);
+
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <RouterProvider router={routes} />

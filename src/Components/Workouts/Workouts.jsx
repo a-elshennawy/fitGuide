@@ -48,8 +48,14 @@ export default function Workouts() {
         if (data && Array.isArray(data) && data.length > 0) {
           setWorkoutPlan(data[0].workOutPlan);
           if (Array.isArray(data[0].exercises)) {
+            const targetExerciseIds = [39, 40, 42, 41];
+
+            const filteredExercises = data[0].exercises.filter((ex) =>
+              targetExerciseIds.includes(ex.exerciseId)
+            );
+
             setExercises(
-              data[0].exercises.slice(0, 3).map((ex, index) => ({
+              filteredExercises.map((ex, index) => ({
                 ...ex,
                 exerciseId: ex.exerciseId || index + 1,
               }))
@@ -129,31 +135,16 @@ export default function Workouts() {
       return;
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-      console.log("Camera access granted for exercise:", exerciseId);
-      alert("Camera access granted! Redirecting to AI tracking page...");
-
-      navigate(`/ai-tracking/${exerciseId}`);
-    } catch (err) {
-      if (err.name === "NotAllowedError") {
-        alert(
-          "Camera access denied. Please allow camera access in your browser settings to use this feature."
-        );
-      } else if (
-        err.name === "NotFoundError" ||
-        err.name === "DevicesNotFoundError"
-      ) {
-        alert(
-          "No camera found. Please ensure a camera is connected and enabled."
-        );
-      } else {
-        console.error("Error accessing camera:", err);
-        alert(
-          "An error occurred while trying to access your camera. Please check your console for details."
-        );
-      }
+    if (exerciseId == 39) {
+      window.location.href = "/AI_Models/pushup/index.html";
+    } else if (exerciseId == 40) {
+      window.location.href = "/AI_Models/tricep/index.html";
+    } else if (exerciseId == 41) {
+      window.location.href = "/AI_Models/squat/index.html";
+    } else if (exerciseId == 42) {
+      window.location.href = "/AI_Models/bicepCurl/index.html";
+    } else {
+      navigate("/WorkoutNotAvailableYet");
     }
   };
 

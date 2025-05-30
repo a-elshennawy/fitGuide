@@ -581,7 +581,7 @@ body {
         }
       }
 
-      .passwordReset {
+      .toReg {
         padding: 0;
         text-align: end;
         background-color: transparent;
@@ -1154,7 +1154,7 @@ body {
 
     .workoutItems {
       padding: 20px 10px;
-      height: 80dvh;
+
       border-radius: 10px;
       background-color: #fff;
       justify-content: center;
@@ -1220,6 +1220,49 @@ body {
           color: #fd0000;
           padding: 5px 10px;
           border-radius: 10px;
+        }
+      }
+    }
+  }
+}
+
+.soon {
+  .soonInner {
+    text-align: center;
+
+    .soonText {
+      background-image: linear-gradient(to left, #008b8b, #3cb371);
+      padding: 10px 20px;
+      border-radius: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      img {
+        width: 20%;
+      }
+      h1,
+      h4 {
+        color: #fff;
+        margin: 10px 0px;
+        font-weight: bolder;
+      }
+
+      .btns {
+        padding: 10px 0px;
+        button {
+          padding: 5px 10px;
+          margin: 0px 10px;
+          border: none;
+          border-radius: 5px;
+          background-color: #fff;
+
+          a {
+            text-decoration: none;
+            color: #3cb371;
+            font-weight: bold;
+          }
         }
       }
     }
