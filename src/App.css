@@ -1066,6 +1066,12 @@ body {
     align-items: baseline;
     gap: 10px;
 
+    .rightSide {
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+
     .PSec {
       background-color: #fff;
       padding: 10px 20px;
@@ -1597,26 +1603,11 @@ body {
     }
 
     .logContent {
-      padding: 50px 0px;
+      height: 75dvh;
+      padding: 40px 0px;
       justify-content: center;
       align-items: start;
-      gap: 20px;
-
-      .exVid {
-        background-color: #fff;
-        margin: 0px;
-        padding: 0;
-        border-radius: 10px;
-        overflow: hidden;
-
-        .footer {
-          padding: 10px;
-          p {
-            padding: 0;
-            margin: 0;
-          }
-        }
-      }
+      gap: 10px;
 
       .exScore {
         background-color: #fff;
@@ -1645,32 +1636,49 @@ body {
         }
       }
 
-      .exFeedBAck {
-        background-color: #fff;
-        margin: 0px;
-        padding: 20px 10px;
-        border-radius: 10px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .exDetails {
-        background-color: #fff;
-        margin: 0px;
-        padding: 20px 10px;
-        border-radius: 10px;
+      .detSide {
         justify-content: center;
         align-items: center;
         gap: 10px;
 
-        .details {
-          ul {
-            list-style: none;
-            padding: 0;
+        .exFeedBAck {
+          background-color: #fff;
+          margin: 0px;
+          padding: 20px 10px;
+          border-radius: 10px;
+          justify-content: center;
+          align-items: start;
 
-            li {
-              margin: 10px 0px;
+          h4 {
+            padding: 5px 0px;
+          }
+          .feedBack {
+            padding: 5px 0px;
+          }
+
+          .dateTime {
+            border-top: 1px solid #d9d9d9;
+            padding: 5px 0px;
+          }
+        }
+
+        .exDetails {
+          background-color: #fff;
+          margin: 0px;
+          padding: 20px 10px;
+          border-radius: 10px;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+
+          .details {
+            ul {
+              list-style: none;
+              padding: 0;
+
+              li {
+                margin: 10px 0px;
+              }
             }
           }
         }

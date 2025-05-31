@@ -148,7 +148,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec personalInfo fromLeft col-lg-5 col-10 row">
+            <div className="PSec personalInfo fromLeft col-lg-5 col-12 row">
               <h3 className="col-12">personal information</h3>
               <div className="innerSec col-12">
                 <h5>
@@ -183,65 +183,63 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="PSec BMetrics fromRight col-lg-5 col-10 row">
-              <h3 className="col-12">body metrics</h3>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-balance-48.png" alt="" />
-                  weight
-                </h5>
-                <h4>{userMetrics?.weight || "N/A"} kg</h4>
+            <div className="rightSide row col-12 col-lg-5">
+              <div className="PSec BMetrics fromRight col-12 row">
+                <h3 className="col-12">body metrics</h3>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-balance-48.png" alt="" />
+                    weight
+                  </h5>
+                  <h4>{userMetrics?.weight || "N/A"} kg</h4>
+                </div>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-ruler-40.png" alt="" />
+                    height
+                  </h5>
+                  <h4>{userMetrics?.height || "N/A"} cm</h4>
+                </div>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-chemistry-48.png" alt="" />
+                    fat mass
+                  </h5>
+                  <h4>{userMetrics?.fat || "N/A"} %</h4>
+                </div>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-arm-50.png" alt="" />
+                    muscle mass
+                  </h5>
+                  <h4>{userMetrics?.muscleMass || "N/A"} %</h4>
+                </div>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-water-50.png" alt="" />
+                    water mass
+                  </h5>
+                  <h4>{userMetrics?.waterMass || "N/A"} %</h4>
+                </div>
               </div>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-ruler-40.png" alt="" />
-                  height
-                </h5>
-                <h4>{userMetrics?.height || "N/A"} cm</h4>
-              </div>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-chemistry-48.png" alt="" />
-                  fat mass
-                </h5>
-                <h4>{userMetrics?.fat || "N/A"} %</h4>
-              </div>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-arm-50.png" alt="" />
-                  muscle mass
-                </h5>
-                <h4>{userMetrics?.muscleMass || "N/A"} %</h4>
-              </div>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-water-50.png" alt="" />
-                  water mass
-                </h5>
-                <h4>{userMetrics?.waterMass || "N/A"} %</h4>
-              </div>
-            </div>
 
-            <div className="PSec goals fromLeft col-lg-5 col-10 row">
-              <h3 className="col-12">goals & workout plan</h3>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-target-48.png" alt="" />
-                  current goal
-                </h5>
-                <h4>{userGoal?.name || "N/A"}</h4>
+              <div className="PSec goals fromLeft col-12 row">
+                <h3 className="col-12">goals & workout plan</h3>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-target-48.png" alt="" />
+                    current goal
+                  </h5>
+                  <h4>{userGoal?.name || "N/A"}</h4>
+                </div>
+                <div className="innerSec col-5">
+                  <h5>
+                    <img src="imgs/icons8-workout-40.png" alt="" />
+                    workout plan
+                  </h5>
+                  <h4>{workoutPlan?.name || "N/A"}</h4>
+                </div>
               </div>
-              <div className="innerSec col-5">
-                <h5>
-                  <img src="imgs/icons8-workout-40.png" alt="" />
-                  workout plan
-                </h5>
-                <h4>{workoutPlan?.name || "N/A"}</h4>
-              </div>
-            </div>
-
-            <div className="PSec metricH fromRight col-lg-5 col-10 row">
-              <h3 className="col-12">metric history</h3>
             </div>
           </div>
         </div>

@@ -12,11 +12,6 @@ const exitFullscreenBtn = document.getElementById("exitFullscreenBtn");
 const videoContainer = document.querySelector(".video-container");
 const counterContainer = document.getElementById("counter-container");
 
-// Video recording variables
-let mediaRecorder;
-let recordedChunks = [];
-let isRecording = false;
-
 // Initialize counters
 counter = 0;
 correctReps = 0;
@@ -26,21 +21,15 @@ correctCounter.textContent = `Good: ${correctReps}`;
 incorrectCounter.textContent = `Bad: ${incorrectReps}`;
 counterContainer.classList.remove("hidden");
 
-let reactRouter = null;
-
-function setupRouterBridge(router) {
-  reactRouter = router;
-}
 // Setup back button functionality
-
-const mainBackBtn = document.getElementById("backBtn");
-if (mainBackBtn) {
-  mainBackBtn.addEventListener("click", () => {
-    const video = document.getElementById("video");
+const backBtn = document.getElementById("backBtn");
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    // Stop camera if it's running
     if (video?.srcObject) {
       video.srcObject.getTracks().forEach((track) => track.stop());
     }
-    window.location.href = "/workout"; // Simple page reload
+    window.location.href = "/workout";
   });
 }
 
@@ -482,45 +471,6 @@ async function setupDetector() {
   console.log("MoveNet model loaded successfully");
 }
 
-async function startRecording(stream) {
-  try {
-    recordedChunks = [];
-    const options = { mimeType: "video/webm;codecs=vp9" };
-    mediaRecorder = new MediaRecorder(stream, options);
-
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-      }
-    };
-
-    mediaRecorder.onstop = async () => {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const formData = new FormData();
-      formData.append("video", blob, "workout.webm");
-
-      try {
-        const response = await fetch("http://localhost:3002/api/upload-video", {
-          method: "POST",
-          body: formData,
-        });
-        const result = await response.json();
-        if (result.success) {
-          console.log("Video saved successfully:", result.filename);
-        }
-      } catch (error) {
-        console.error("Error uploading video:", error);
-      }
-    };
-
-    mediaRecorder.start(1000); // Record in 1-second chunks
-    isRecording = true;
-    console.log("Recording started");
-  } catch (error) {
-    console.error("Error starting recording:", error);
-  }
-}
-
 async function setupCamera() {
   const isMobile =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -536,7 +486,6 @@ async function setupCamera() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = stream;
-    await startRecording(stream); // Start recording immediately
     return new Promise((resolve) => {
       video.onloadedmetadata = () => {
         canvas.width = video.videoWidth;
@@ -750,25 +699,6 @@ function processDetection(keypoints) {
           sessionComplete = true;
           sessionCompletedTime = Date.now();
 
-          // First stop the camera and exit fullscreen
-          if (video.srcObject) {
-            video.srcObject.getTracks().forEach((track) => track.stop());
-          }
-
-          // Stop the animation loop
-          if (rafId) {
-            cancelAnimationFrame(rafId);
-          }
-
-          // Save session data
-          if (!sessionData.saved) {
-            generateResultsFile();
-            sessionData.saved = true;
-          }
-
-          // Exit fullscreen first
-          exitFullscreenMode();
-
           // Show completion message after a short delay
           setTimeout(showSessionComplete, 500);
 
@@ -876,13 +806,6 @@ function exitFullscreenMode() {
       .catch((err) => console.log("Error exiting fullscreen:", err));
   }
 
-  // Stop recording before stopping the camera
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    mediaRecorder.stop();
-    isRecording = false;
-    console.log("Recording stopped");
-  }
-
   if (video.srcObject) {
     video.srcObject.getTracks().forEach((track) => track.stop());
     video.srcObject = null;
@@ -953,58 +876,36 @@ function createResultsObject() {
     hour12: true,
     timeZone: "UTC",
   };
+
   return {
     workoutName: "Push-up",
     date: currentDate.toLocaleDateString("en-US", dateOptions),
     time: currentDate.toLocaleTimeString("en-US", timeOptions),
     sets: 1,
-    reps: { total: counter, correct: correctReps, incorrect: incorrectReps },
+    reps: {
+      total: counter,
+      correct: correctReps,
+      incorrect: incorrectReps,
+    },
     formIssues: {
-      improperElbowAngle: improperElbowAngleCount,
+      elbowsOutward: improperElbowAngleCount,
+      tShapePushup: improperElbowAngleCount,
+      formNotStraight: 0,
     },
     performanceScore: performanceScore,
     sessionId: Date.now().toString(36) + Math.random().toString(36).substr(2),
-    sessionData: sessionData,
+    sessionData: {
+      rep_feedback: sessionData.rep_feedback,
+      saved: true,
+    },
   };
 }
 
 function saveSessionData(resultsObject) {
   try {
-    // Save to local file through server
-    fetch("http://localhost:3000/api/save-workout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(resultsObject),
-    })
-      .then((response) => {
-        console.log("Server response status:", response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          console.log(
-            "Workout data saved to workout_history.json successfully"
-          );
-        } else {
-          console.error("Error saving workout data to file");
-        }
-      })
-      .catch((error) => {
-        console.error("Error saving to file:", error);
-        // Fallback to localStorage if server save fails
-        try {
-          localStorage.setItem("lastWorkout", JSON.stringify(resultsObject));
-          console.log("Workout saved to localStorage as fallback");
-        } catch (e) {
-          console.error("Failed to save to localStorage:", e);
-        }
-      });
-
+    // Save to localStorage with the specified structure
+    localStorage.setItem("workoutBackup", JSON.stringify(resultsObject));
+    console.log('Workout data saved to localStorage under "workoutBackup"');
     return true;
   } catch (error) {
     console.error("Error in saveSessionData:", error);
@@ -1020,10 +921,6 @@ function generateResultsFile() {
 }
 
 window.addEventListener("beforeunload", () => {
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    mediaRecorder.stop();
-    isRecording = false;
-  }
   if (rafId) cancelAnimationFrame(rafId);
   if (video.srcObject)
     video.srcObject.getTracks().forEach((track) => track.stop());
@@ -1037,13 +934,6 @@ console.log("Push-up Trainer initialized. Press Start Camera to begin.");
 
 // Update session completion logic
 function showSessionComplete() {
-  // Stop recording if it's still active
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    mediaRecorder.stop();
-    isRecording = false;
-    console.log("Recording stopped at session completion");
-  }
-
   // Hide the video container and controls
   document.querySelector(".video-container").style.display = "none";
   document.querySelector(".controls").style.display = "none";
@@ -1063,40 +953,11 @@ function showSessionComplete() {
   const performanceScore = calculatePerformanceScore();
   document.getElementById("final-score").textContent = performanceScore + "%";
 
-  // Show video saving status
-  const videoStatus = document.createElement("div");
-  videoStatus.className = "video-status";
-  videoStatus.innerHTML = `
-        <p>Saving workout video...</p>
-        <div class="progress-bar">
-            <div class="progress"></div>
-        </div>
-    `;
-  sessionComplete.insertBefore(
-    videoStatus,
-    sessionComplete.querySelector(".next-btn")
-  );
-
-  // Animate progress bar
-  const progressBar = videoStatus.querySelector(".progress");
-  let progress = 0;
-  const progressInterval = setInterval(() => {
-    progress += 5;
-    progressBar.style.width = `${progress}%`;
-    if (progress >= 100) {
-      clearInterval(progressInterval);
-      videoStatus.innerHTML = "<p>Workout video saved successfully!</p>";
-      setTimeout(() => {
-        videoStatus.remove();
-      }, 2000);
-    }
-  }, 100);
-
   // Add event listener to next button
   const nextBtn = document.getElementById("nextBtn");
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
-      window.location.href = "/workoutFeedback"; // Simple page reload
+      window.location.href = "/workoutFeedback";
     });
   }
 }
