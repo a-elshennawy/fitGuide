@@ -36,9 +36,12 @@ export default function DailySummary() {
     };
 
     try {
-      const dailySummaryRes = await fetch("/api/HomeContoller/DailySummary", {
-        headers,
-      });
+      const dailySummaryRes = await fetch(
+        "https://myfirtguide.runasp.net/api/HomeContoller/DailySummary",
+        {
+          headers,
+        }
+      );
       if (dailySummaryRes.ok) {
         const summaryData = await dailySummaryRes.json();
         console.log("Daily Summary API Response:", summaryData);
@@ -48,9 +51,12 @@ export default function DailySummary() {
         setDailySummary(null);
       }
 
-      const weightRes = await fetch("/api/HomeContoller/WeightTracker", {
-        headers,
-      });
+      const weightRes = await fetch(
+        "https://myfirtguide.runasp.net/api/HomeContoller/WeightTracker",
+        {
+          headers,
+        }
+      );
       if (weightRes.ok) {
         const weightTrackerData = await weightRes.json();
         console.log("Weight Tracker API Response:", weightTrackerData);
@@ -123,7 +129,7 @@ export default function DailySummary() {
     if (inputGymFrequency !== "")
       params.append("GymFrequency", parseFloat(inputGymFrequency));
 
-    const apiUrl = `/api/UserMetrics/UpdateMetrics?${params.toString()}`;
+    const apiUrl = `https://myfirtguide.runasp.net/api/UserMetrics/UpdateMetrics?${params.toString()}`;
 
     try {
       const response = await fetch(apiUrl, {

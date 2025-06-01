@@ -17,10 +17,10 @@ export default function Sign_In() {
     e.preventDefault();
     setError("");
 
-    // /api/Account/LogIn?EmailAddress to log in auth
+    // https://myfirtguide.runasp.net/api/Account/LogIn?EmailAddress to log in auth
     try {
       const response = await fetch(
-        `/api/Account/LogIn?EmailAddress=${encodeURIComponent(
+        `https://myfirtguide.runasp.net/api/Account/LogIn?EmailAddress=${encodeURIComponent(
           email
         )}&Password=${encodeURIComponent(passWord)}`,
         {
