@@ -22,7 +22,7 @@ export default function HealthConditions() {
 
   // using /api/Injury/GetAllInjuries to get injuries for user to choose to choose from
   useEffect(() => {
-    fetch("https://myfirtguide.runasp.net/api/Injury/GetAllInjuries")
+    fetch("/api/Injury/GetAllInjuries")
       .then((res) => res.json())
       .then((data) =>
         setInjuries(
@@ -36,7 +36,7 @@ export default function HealthConditions() {
       );
 
     // using /api/Allergy/Show All Allergies to get allergies for user to choose from
-    fetch("https://myfirtguide.runasp.net/api/Allergy/Show All Allergies")
+    fetch("/api/Allergy/Show All Allergies")
       .then((res) => res.json())
       .then((data) =>
         setAllergies(
@@ -111,9 +111,7 @@ export default function HealthConditions() {
     try {
       for (const injuryId of userInjuries) {
         if (injuryId === "None") continue;
-        const url = new URL(
-          "https://myfirtguide.runasp.net/api/Injury/AddInjury"
-        );
+        const url = new URL("/api/Injury/AddInjury");
 
         url.searchParams.append("id", injuryId);
         const resInjury = await fetch(url.toString(), {
@@ -146,9 +144,7 @@ export default function HealthConditions() {
       // using /api/Allergy/AddAllergy to assign allergy to current user via token
       for (const allergyId of userAllergies) {
         if (allergyId === "None") continue;
-        const url = new URL(
-          "https://myfirtguide.runasp.net/api/Allergy/AddAllergy"
-        );
+        const url = new URL("/api/Allergy/AddAllergy");
 
         url.searchParams.append("id", allergyId);
         const resAllergy = await fetch(url.toString(), {

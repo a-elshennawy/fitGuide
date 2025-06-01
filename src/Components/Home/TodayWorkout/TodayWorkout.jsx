@@ -27,7 +27,7 @@ export default function TodayWorkout() {
 
       try {
         const workoutRes = await fetch(
-          "https://myfirtguide.runasp.net/api/HomeContoller/GetFirstFiveWorkoutExercises",
+          "/api/HomeContoller/GetFirstFiveWorkoutExercises",
           { headers }
         );
         if (workoutRes.ok) {

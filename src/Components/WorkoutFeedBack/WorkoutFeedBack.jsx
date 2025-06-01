@@ -75,17 +75,14 @@ export default function WorkoutFeedBack() {
     };
 
     try {
-      const response = await fetch(
-        "https://myfirtguide.runasp.net/api/ExerciseLog/Save Feedback",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch("/api/ExerciseLog/Save Feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

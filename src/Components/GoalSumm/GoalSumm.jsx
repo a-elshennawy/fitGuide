@@ -43,13 +43,13 @@ export default function GoalSumm() {
         // /api/UserMetrics/GetAllUserMetrices to view stored metrics
         const [metricsRes, goalRes] = await Promise.all([
           fetch(
-            "https://myfirtguide.runasp.net/api/UserMetrics/GetAllUserMetrices",
+            "/api/UserMetrics/GetAllUserMetrices",
 
             { headers }
           ),
 
           // /api/Goal/GetUserGoal to view stored goal
-          fetch("https://myfirtguide.runasp.net/api/Goal/GetUserGoal", {
+          fetch("/api/Goal/GetUserGoal", {
             headers,
           }),
         ]);
@@ -199,7 +199,7 @@ export default function GoalSumm() {
       };
 
       const nutritionPlanRes = await fetch(
-        "https://myfirtguide.runasp.net/api/NutritionPlan/GenerateNutritionPlan",
+        "/api/NutritionPlan/GenerateNutritionPlan",
 
         {
           method: "POST",
@@ -220,9 +220,7 @@ export default function GoalSumm() {
 
       console.log("GoalSumm: Nutrition plan generated successfully");
 
-      const workoutUrl = new URL(
-        "https://myfirtguide.runasp.net/api/WorkOut/GenerateWorkOut"
-      );
+      const workoutUrl = new URL("/api/WorkOut/GenerateWorkOut");
 
       workoutUrl.searchParams.append("planType", selectedWorkoutPlanName);
 
