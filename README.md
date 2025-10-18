@@ -240,4 +240,3 @@ For support, email support@fitguide.com or open an issue in the repository.
 ---
 
 **Built with ❤️ for fitness enthusiasts everywhere**
-© 2025 Ahmed ElShennawy. All Rights Reserved.
